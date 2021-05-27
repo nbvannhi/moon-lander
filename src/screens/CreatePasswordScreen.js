@@ -13,7 +13,7 @@ import {
 export default ({ navigation }) => {
   const [password, setPassword] = React.useState('')
 
-  const handlePasswordUpdate = (password) => setEmail(password)
+  const handlePasswordUpdate = (password) => setPassword(password)
   const handleButtonPress = () => {
     setPassword('')
     navigation.navigate('Welcome User')
