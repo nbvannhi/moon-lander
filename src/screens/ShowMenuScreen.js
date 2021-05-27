@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { 
   Image, 
   ImageBackground, 
@@ -9,11 +9,13 @@ import {
   TouchableOpacity
 } from 'react-native'
 
-export default ({ navigation }) => {
-  const handleProfilePress = () => navigation.navigate('Show Profile')
-  const handleTimetablePress = () => navigation.navigate('Show Timetable')
-  const handleAssessmentPress = () => navigation.navigate('Show Assessment')
-  const handleGradingPress = () => navigation.navigate('Show Grading')
+export default ({ route, navigation }) => {
+  const { username, email, password } = route.params
+
+  const handleProfilePress = () => navigation.navigate('Show Profile', { username, email, password })
+  const handleTimetablePress = () => navigation.navigate('Show Timetable', { username, email, password })
+  const handleAssessmentPress = () => navigation.navigate('Show Assessment', { username, email, password })
+  const handleGradingPress = () => navigation.navigate('Show Grading', { username, email, password })
 
   return (
     <ImageBackground
@@ -96,6 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     lineHeight: 30, 
     textAlign: 'center', 
+    alignSelf: 'center', 
     marginVertical: 10, 
   }, 
 })

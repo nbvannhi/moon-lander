@@ -1,12 +1,15 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
+
+import StartUpScreen from './src/screens/StartUpScreen'
+import LogInScreen from './src/screens/LogInScreen'
 
 import ChooseUsernameScreen from './src/screens/ChooseUsernameScreen'
 import EnterEmailScreen from './src/screens/EnterEmailScreen'
 import CreatePasswordScreen from './src/screens/CreatePasswordScreen'
 import WelcomeUserScreen from './src/screens/WelcomeUserScreen'
+
 import ShowMenuScreen from './src/screens/ShowMenuScreen'
 
 import ShowProfileScreen from './src/screens/ShowProfileScreen'
@@ -16,12 +19,24 @@ import ShowGradingScreen from './src/screens/ShowGradingScreen'
 
 import AddModuleScreen from './src/screens/AddModuleScreen'
 
+import ShowEventsScreen from './src/screens/ShowEventsScreen'
+import ShowModulesScreen from './src/screens/ShowModulesScreen'
+
 const Stack = createStackNavigator()
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen 
+          name='Start Up'
+          component={StartUpScreen}
+        />
+        <Stack.Screen 
+          name='Log In'
+          component={LogInScreen}
+        />
+
         <Stack.Screen 
           name='Choose Username'
           component={ChooseUsernameScreen}
@@ -38,6 +53,7 @@ export default function App() {
           name='Welcome User'
           component={WelcomeUserScreen}
         />
+
         <Stack.Screen 
           name='Show Menu'
           component={ShowMenuScreen}

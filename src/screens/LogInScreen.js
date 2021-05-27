@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontWeight: 'bold', 
     lineHeight: 30, 
+    alignSelf: 'center', 
   }, 
   footer: {
     color: '#ffffff', 
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     lineHeight: 20,  
     textAlign: 'center', 
+    alignSelf: 'center', 
   }, 
   link: {
     color: '#ffffff', 
@@ -162,5 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 20,  
     textAlign: 'center', 
+    alignSelf: 'center', 
   }, 
 })

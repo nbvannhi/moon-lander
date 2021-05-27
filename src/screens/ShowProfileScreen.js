@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { 
   Image, 
   ImageBackground, 
@@ -10,7 +10,9 @@ import {
   View 
 } from 'react-native'
 
-export default ({ navigation }) => {
+export default ({ route, navigation }) => {
+  const { username, email, password } = route.params
+
   const handleAvatarPress = () => {
     navigation.navigate('Show Menu')
   }
@@ -28,7 +30,7 @@ export default ({ navigation }) => {
           />
         </TouchableOpacity>
         <View style={styles.container}>
-          <Text style={styles.title}>Hi, example_username</Text>
+          <Text style={styles.title}>Hi, {JSON.stringify(username).replace(/['"]+/g, '')}</Text>
           <Text style={styles.subtitle}>
             Your profile details will be displayed here. 
             Lorem Ipsum is simply dummy text of the printing and typesetting industry. 

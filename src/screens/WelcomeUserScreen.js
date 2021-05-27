@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { 
   ImageBackground, 
   SafeAreaView, 
@@ -10,9 +10,23 @@ import {
 } from 'react-native'
 import { Divider } from 'react-native-elements'
 
-export default ({ navigation }) => {
+import * as Authentication from '../../api/auth'
+
+export default ({ route, navigation}) => {
+  const { username, email, password } = route.params
+  const [isRegisterLoading, setIsRegisterLoading] = React.useState(false)
+
   const handleButtonPress = () => {
-    navigation.navigate('Show Menu')
+    setIsRegisterLoading(true)
+
+    Authentication.createAccount(
+      { name: username, email: email, password: password }, 
+      (user) => navigation.navigate('Show Menu', { username, email, password } ), 
+      (error) => {
+        setIsRegisterLoading(false)
+        return console.error(error)
+      }
+    )
   }
 
   return (
@@ -22,7 +36,7 @@ export default ({ navigation }) => {
     >
       <SafeAreaView style={styles.screen}>
         <View style={styles.container}>
-          <Text style={styles.title}>Welcome to MoonLander, example_username</Text>
+          <Text style={styles.title}>Welcome to MoonLander, {JSON.stringify(username).replace(/['"]+/g, '')}</Text>
           <Text style={styles.subtitle}>
             You're invited to join the cruise team of our spaceship. 
             Become a MoonLander to explore things beyond the starts.
@@ -31,6 +45,7 @@ export default ({ navigation }) => {
         <View style={styles.container}>
           <TouchableOpacity 
             style={styles.button}
+            loading={isRegisterLoading}
             onPress={handleButtonPress}>
             <Text style={styles.text}>Complete Sign-up</Text>
           </TouchableOpacity>
@@ -41,7 +56,7 @@ export default ({ navigation }) => {
         <Text style={styles.footer}>
           By creating an account, you agree to the
           <Text style={{ fontWeight: 'bold' }}> MoonLander Terms </Text>and
-          <Text style={{ fontWeight: 'bold' }}> Privacy Polic.</Text>
+          <Text style={{ fontWeight: 'bold' }}> Privacy Policy.</Text>
         </Text>
       </View>
     </ImageBackground>
@@ -103,6 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontWeight: 'bold', 
     lineHeight: 30, 
+    alignSelf: 'center', 
   }, 
   footer: {
     color: '#ffffff', 
@@ -110,5 +126,6 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     lineHeight: 20,  
     textAlign: 'center', 
+    alignSelf: 'center', 
   }, 
 })

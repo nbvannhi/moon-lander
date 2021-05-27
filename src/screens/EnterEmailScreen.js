@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { 
   ImageBackground, 
   SafeAreaView, 
@@ -10,13 +10,14 @@ import {
   View 
 } from 'react-native'
 
-export default ({ navigation }) => {
+export default ({ route, navigation }) => {
+  const { username } = route.params
   const [email, setEmail] = React.useState('')
 
   const handleEmailUpdate = (email) => setEmail(email)
   const handleButtonPress = () => {
     setEmail('')
-    navigation.navigate('Create Password')
+    navigation.push('Create Password', { username: username, email: email})
   }
 
   return (
@@ -104,5 +105,6 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontWeight: 'bold', 
     lineHeight: 30, 
+    alignSelf: 'center', 
   }, 
 })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { 
   ImageBackground, 
   SafeAreaView, 
@@ -16,7 +16,7 @@ export default ({ navigation }) => {
   const handleUsernameUpdate = (username) => setUsername(username)
   const handleButtonPress = () => {
     setUsername('')
-    navigation.navigate('Enter Email')
+    navigation.push('Enter Email', { username: username })
   }
 
   return (
@@ -104,5 +104,6 @@ const styles = StyleSheet.create({
     fontSize: 16, 
     fontWeight: 'bold', 
     lineHeight: 30, 
+    alignSelf: 'center', 
   }, 
 })
