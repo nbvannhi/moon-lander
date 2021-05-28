@@ -8,6 +8,9 @@ import {
   Text, 
   TouchableOpacity
 } from 'react-native'
+import { CommonActions } from "@react-navigation/native"
+
+import * as Authentication from '../../api/auth'
 
 export default ({ route, navigation }) => {
   const { username, email, password } = route.params
@@ -16,7 +19,15 @@ export default ({ route, navigation }) => {
   const handleTimetablePress = () => navigation.navigate('Show Timetable', { username, email, password })
   const handleAssessmentPress = () => navigation.navigate('Show Assessment', { username, email, password })
   const handleGradingPress = () => navigation.navigate('Show Grading', { username, email, password })
-
+  const handleButtonPress = () => {
+    Authentication.signOut(
+      () => navigation.dispatch(CommonActions.reset({
+        index: 0, 
+        routes: [{ name: 'Log In' }]
+      })), 
+      (error) => console.error(error)
+    )
+  }
   return (
     <ImageBackground
       style={styles.background}
@@ -67,6 +78,11 @@ export default ({ route, navigation }) => {
           />
           <Text style={styles.title}>GRADING</Text>
         </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={handleButtonPress}>
+          <Text style={styles.text}>Sign Out</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </ImageBackground>
   )
@@ -100,5 +116,21 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     alignSelf: 'center', 
     marginVertical: 10, 
+  }, 
+  button: {
+    backgroundColor: '#8e8a98', 
+    borderRadius: 5, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    width: 300, 
+    height: 40,
+    marginTop: 10, 
+  }, 
+  text: {
+    color: '#ffffff', 
+    fontSize: 16, 
+    fontWeight: 'bold', 
+    lineHeight: 30, 
+    alignSelf: 'center', 
   }, 
 })

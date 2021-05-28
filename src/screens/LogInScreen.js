@@ -12,17 +12,34 @@ import {
   View 
 } from 'react-native'
 import { Divider } from 'react-native-elements'
+import { CommonActions } from '@react-navigation/native'
+
+import * as Authentication from '../../api/auth'
 
 export default LogInScreen = ({ navigation }) => {
   const [id, setId] = React.useState('')
   const [password, setPassword] = React.useState('')
+  const [isLoginLoading, setIsLoginLoading] = React.useState(false)
 
   const handleIdUpdate = (id) => setId(id)
   const handlePasswordUpdate = (password) => setPassword(password)
   const handleButtonPress = () => {
-    setId('')
-    setPassword('')
-    navigation.push('Show Menu', { username: id, password })
+    setIsLoginLoading(true)
+
+    Authentication.signIn(
+      { email: id, password: password }, 
+      (user) => navigation.dispatch(CommonActions.reset({
+        index: 0, 
+        routes: [{
+          name: 'Show Menu', 
+          params: { username: user.displayName, email: id, password }
+        }]
+      })), 
+      (error) => {
+        setIsLoginLoading(false)
+        return console.error(error)
+      }
+    )
   }
   const handleTextPress = () => {
     navigation.navigate('Choose Username')
@@ -55,7 +72,7 @@ export default LogInScreen = ({ navigation }) => {
         <View>
           <TextInput 
             style={styles.field} 
-            placeholder='Username / Email' 
+            placeholder='Email' 
             placeholderTextColor='#aaa7b2' 
             value={id}
             selectionColor='#8e8a98'
@@ -75,6 +92,7 @@ export default LogInScreen = ({ navigation }) => {
           />
           <TouchableOpacity 
             style={styles.button}
+            loading={isLoginLoading}
             onPress={handleButtonPress}>
             <Text style={styles.text}>Log In</Text>
           </TouchableOpacity>

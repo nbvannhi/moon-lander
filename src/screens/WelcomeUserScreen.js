@@ -9,21 +9,28 @@ import {
   View 
 } from 'react-native'
 import { Divider } from 'react-native-elements'
+import { CommonActions } from "@react-navigation/native"
 
 import * as Authentication from '../../api/auth'
 
 export default ({ route, navigation}) => {
   const { username, email, password } = route.params
-  const [isRegisterLoading, setIsRegisterLoading] = React.useState(false)
+  const [isSignupLoading, setIsSignupLoading] = React.useState(false)
 
   const handleButtonPress = () => {
-    setIsRegisterLoading(true)
+    setIsSignupLoading(true)
 
     Authentication.createAccount(
       { name: username, email: email, password: password }, 
-      (user) => navigation.navigate('Show Menu', { username, email, password } ), 
+      (user) => navigation.dispatch(CommonActions.reset({
+        index: 0, 
+        routes: [{
+          name: 'Show Menu', 
+          params: { username: user.displayName, email, password }
+        }]
+      })), 
       (error) => {
-        setIsRegisterLoading(false)
+        setIsSignupLoading(false)
         return console.error(error)
       }
     )
@@ -45,7 +52,7 @@ export default ({ route, navigation}) => {
         <View style={styles.container}>
           <TouchableOpacity 
             style={styles.button}
-            loading={isRegisterLoading}
+            loading={isSignupLoading}
             onPress={handleButtonPress}>
             <Text style={styles.text}>Complete Sign-up</Text>
           </TouchableOpacity>

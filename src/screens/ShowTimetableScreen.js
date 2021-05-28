@@ -24,14 +24,32 @@ export default ({ navigation }) => {
       <SafeAreaView style={styles.screen}>
         <ScrollView>
           <View style={styles.top}>
-            <TouchableOpacity onPress={handleAvatarPress}>
-              <Image 
-                style={styles.avatar}
-                source={require('../../assets/images/avatar-sample.png')}
-                resizeMode='contain'
-              />
-            </TouchableOpacity>
-            <Text style={styles.header}>Timetable</Text>
+            <View style={styles.left}>
+              <TouchableOpacity onPress={handleAvatarPress}>
+                <Image 
+                  style={styles.avatar}
+                  source={require('../../assets/images/avatar-sample.png')}
+                  resizeMode='contain'
+                />
+              </TouchableOpacity>
+              <Text style={styles.header}>Timetable</Text>
+            </View>
+            <View style={styles.right}>
+              <TouchableOpacity onPress={handleAvatarPress}>
+                <Image 
+                  style={styles.icon}
+                  source={require('../../assets/images/search-icon.png')}
+                  resizeMode='contain'
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleAvatarPress}>
+                <Image 
+                  style={styles.icon}
+                  source={require('../../assets/images/edit-icon.png')}
+                  resizeMode='contain'
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.container}>
             <Text style={styles.text}>
@@ -56,7 +74,7 @@ const styles = StyleSheet.create({
   top: {
     flex: 0.08, 
     flexDirection: 'row', 
-    justifyContent: 'flex-start', 
+    justifyContent: 'space-between', 
     alignItems: 'flex-start', 
   }, 
   container: {
@@ -65,8 +83,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40, 
     paddingTop: 20, 
   }, 
+  left: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-start', 
+    alignItems: 'flex-start', 
+  }, 
+  right: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-end', 
+    alignItems: 'flex-end',
+  }, 
   avatar: {
-    marginRight: 20, 
+    marginRight: 10, 
     width: 50, 
     height: 50, 
   }, 
@@ -77,6 +105,11 @@ const styles = StyleSheet.create({
     lineHeight: 24, 
     textAlign: 'center', 
     alignSelf: 'center',  
+  }, 
+  icon: {
+    marginLeft: 10, 
+    width: 50, 
+    height: 50, 
   }, 
   text: {
     color: '#ffffff', 
