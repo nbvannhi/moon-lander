@@ -15,6 +15,12 @@ export default ({ navigation }) => {
   const handleAvatarPress = () => {
     navigation.navigate('Show Menu')
   }
+  const handleModuleListPress = () => {
+    navigation.navigate('Show Modules')
+  }
+  const handleAddModulePress = () => {
+    navigation.navigate('Add Module')
+  }
 
   return (
     <ImageBackground
@@ -22,35 +28,35 @@ export default ({ navigation }) => {
       source={require('../../assets/images/background.png')}
     >
       <SafeAreaView style={styles.screen}>
-        <ScrollView>
-          <View style={styles.top}>
-            <View style={styles.left}>
-              <TouchableOpacity onPress={handleAvatarPress}>
-                <Image 
-                  style={styles.avatar}
-                  source={require('../../assets/images/avatar-sample.png')}
-                  resizeMode='contain'
-                />
-              </TouchableOpacity>
-              <Text style={styles.header}>Timetable</Text>
-            </View>
-            <View style={styles.right}>
-              <TouchableOpacity onPress={handleAvatarPress}>
-                <Image 
-                  style={styles.icon}
-                  source={require('../../assets/images/search-icon.png')}
-                  resizeMode='contain'
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleAvatarPress}>
-                <Image 
-                  style={styles.icon}
-                  source={require('../../assets/images/edit-icon.png')}
-                  resizeMode='contain'
-                />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.top}>
+          <View style={styles.left}>
+            <TouchableOpacity onPress={handleAvatarPress}>
+              <Image 
+                style={styles.avatar}
+                source={require('../../assets/images/avatar-sample.png')}
+                resizeMode='contain'
+              />
+            </TouchableOpacity>
+            <Text style={styles.header}>Timetable</Text>
           </View>
+          <View style={styles.right}>
+            <TouchableOpacity onPress={handleModuleListPress}>
+              <Image 
+                style={styles.icon}
+                source={require('../../assets/images/search-icon.png')}
+                resizeMode='contain'
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleAddModulePress}>
+              <Image 
+                style={styles.icon}
+                source={require('../../assets/images/add-icon.png')}
+                resizeMode='contain'
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <ScrollView>
           <View style={styles.container}>
             <Text style={styles.text}>
               Sorry, this feature is currently unavailable :(.
@@ -75,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 0.08, 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
-    alignItems: 'flex-start', 
+    alignItems: 'center', 
   }, 
   container: {
     flex: 0.92, 
@@ -107,9 +113,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',  
   }, 
   icon: {
-    marginLeft: 10, 
-    width: 50, 
-    height: 50, 
+    margin: 5, 
+    width: 30, 
+    height: 30, 
   }, 
   text: {
     color: '#ffffff', 

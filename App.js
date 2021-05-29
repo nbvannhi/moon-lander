@@ -22,63 +22,74 @@ import AddModuleScreen from './src/screens/AddModuleScreen'
 import ShowEventsScreen from './src/screens/ShowEventsScreen'
 import ShowModulesScreen from './src/screens/ShowModulesScreen'
 
-import Table from './src/components/Table'
-
 const Stack = createStackNavigator()
 
 export default function App() {
   return (
-    <Table />
-    // <NavigationContainer>
-    //   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    //     <Stack.Screen 
-    //       name='Start Up'
-    //       component={StartUpScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Log In'
-    //       component={LogInScreen}
-    //     />
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen 
+          name='Start Up'
+          component={StartUpScreen}
+        />
+        <Stack.Screen 
+          name='Log In'
+          component={LogInScreen}
+        />
 
-    //     <Stack.Screen 
-    //       name='Choose Username'
-    //       component={ChooseUsernameScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Enter Email'
-    //       component={EnterEmailScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Create Password'
-    //       component={CreatePasswordScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Welcome User'
-    //       component={WelcomeUserScreen}
-    //     />
+        <Stack.Screen 
+          name='Choose Username'
+          component={ChooseUsernameScreen}
+        />
+        <Stack.Screen 
+          name='Enter Email'
+          component={EnterEmailScreen}
+        />
+        <Stack.Screen 
+          name='Create Password'
+          component={CreatePasswordScreen}
+        />
+        <Stack.Screen 
+          name='Welcome User'
+          component={WelcomeUserScreen}
+        />
 
-    //     <Stack.Screen 
-    //       name='Show Menu'
-    //       component={ShowMenuScreen}
-    //     />
+        <Stack.Screen 
+          name='Show Menu'
+          component={ShowMenuScreen}
+        />
         
-    //     <Stack.Screen 
-    //       name='Show Profile'
-    //       component={ShowProfileScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Show Timetable'
-    //       component={ShowTimetableScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Show Assessment'
-    //       component={ShowAssessmentScreen}
-    //     />
-    //     <Stack.Screen 
-    //       name='Show Grading'
-    //       component={ShowGradingScreen}
-    //     />
-    //   </Stack.Navigator>
-    // </NavigationContainer>
+        <Stack.Screen 
+          name='Show Profile'
+          component={ShowProfileScreen}
+        />
+        <Stack.Screen 
+          name='Show Timetable'
+          component={ShowTimetableScreen}
+        />
+        <Stack.Screen 
+          name='Show Assessment'
+          component={ShowAssessmentScreen}
+        />
+        <Stack.Screen 
+          name='Show Grading'
+          component={ShowGradingScreen}
+        />
+
+        <Stack.Screen 
+          name='Add Module'
+          component={AddModuleScreen}
+        />
+
+        <Stack.Screen 
+          name='Show Events'
+          component={ShowEventsScreen}
+        />
+        <Stack.Screen 
+          name='Show Modules'
+          component={ShowModulesScreen}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }

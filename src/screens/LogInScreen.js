@@ -1,6 +1,5 @@
 import React from 'react'
 import { 
-  BackHandler, 
   Image, 
   ImageBackground, 
   SafeAreaView, 
@@ -44,19 +43,6 @@ export default LogInScreen = ({ navigation }) => {
   const handleTextPress = () => {
     navigation.navigate('Choose Username')
   }
-
-  // const diableBackButton = () => {
-  //   BackHandler.exitApp()
-  //   return true
-  // }
-  // componentWillMount()
-  // {
-  //   BackHandler.addEventListener('hardwareBackPress', disableBackButton)
-  // }
-  // componentWillUnmount() 
-  // {
-  //   BackHandler.removeEventListener('hardwareBackPress', disableBackButton)
-  // }
 
   return(
     <ImageBackground
