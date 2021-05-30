@@ -12,52 +12,86 @@ import {
   View 
 } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { CommonActions } from '@react-navigation/native'
 
-export default ({ navigation }) => {
+import * as Authentication from '../../api/auth'
+import * as Modules from '../../api/modules'
+
+class ClassTime {
+  constructor(day, startTime, endTime, room) {
+    this.day = day
+    this.startTime = [startTime.getHours(), startTime.getMinutes()]
+    this.endTime = [endTime.getHours(), endTime.getMinutes()]
+    this.room = room
+  }
+}
+
+export default ({ route, navigation }) => {
+  const { username, email, password } = route.params
   const [name, setName] = useState('')
   const [code, setCode] = useState('')
+  const [classes, setClasses] = useState([])
+  const [numOfClasses, setNumOfClasses] = useState(0)
   const [day, setDay] = useState('')
   const [startTime, setStartTime] = useState(new Date())
   const [endTime, setEndTime] = useState(new Date())
   const [room, setRoom] = useState('')
   const [showStartTime, setShowStartTime] = useState(false)
   const [showEndTime, setShowEndTime] = useState(false)
+  const [userId, setUserId] = useState(Authentication.getCurrentUserId())
 
   const handleNameUpdate = (name) => setName(name)
   const handleCodeUpdate = (code) => setCode(code)
+  const handleClassesUpdate = (classTime) => {
+    classes.push(classTime)
+    setClasses(classes)
+  }
+  const handleNumOfClassesUpdate = (numOfClasses) => setNumOfClasses(numOfClasses+1)
   const handleDayUpdate = (day) => setDay(day)
-  const handleRoomUpdate = (room) => setRoom(room)
-
-  const showStartTimePicker = () => setShowStartTime(true)
-  const showEndTimePicker = () => setShowEndTime(true)
-  const onChangeStartTime = (event, selectedValue) => {
+  const handleStartTimeUpdate = (event, selectedValue) => {
     const selectedTime = selectedValue || new Date()
     setShowStartTime(false)
     setStartTime(selectedTime)
   }
-  const onChangeEndTime = (event, selectedValue) => {
+  const handleEndTimeUpdate = (event, selectedValue) => {
     const selectedTime = selectedValue || new Date()
     setShowEndTime(false)
     setEndTime(selectedTime)
   }
+  const handleRoomUpdate = (room) => setRoom(room)
+  const showStartTimePicker = () => setShowStartTime(true)
+  const showEndTimePicker = () => setShowEndTime(true)
   const formatTime = (time) => `${time.getHours()}:${time.getMinutes()}`;
 
-  const handleButtonPress = () => {}
-  const handleAvatarPress = () => {
-    navigation.navigate('Show Menu')
-  }
-  const handleCancelPress = () => {
-    navigation.navigate('Show Timetable')
-  }
-  const handleSavePress = () => {
-    handleNameUpdate('')
-    handleCodeUpdate('')
+  const handleAddClass = () => {
+    const newClass = new ClassTime(day, startTime, endTime, room)
+    handleClassesUpdate(newClass)
+    handleNumOfClassesUpdate(numOfClasses)
     handleDayUpdate('')
+    handleStartTimeUpdate(new Date())
+    handleEndTimeUpdate(new Date())
     handleRoomUpdate('')
-    onChangeStartTime(new Date())
-    onChangeEndTime(new Date())
+  }
+  const handleCreateModule = () => {
+    handleAddClass()
+    return Modules.createModule(
+      { userId, name, code, classes }, 
+      () => navigation.dispatch(CommonActions.reset({
+        index: 0, 
+        routes: [{
+          name: 'Show Modules', 
+          params: { username, email, password }
+        }]
+      })), 
+      console.error
+    )
+  }
+  const handleCancelProcess = () => {
     navigation.navigate('Show Timetable')
+  }
+  const handleShowNavigation = () => {
+    navigation.navigate('Show Menu')
   }
   
   return (
@@ -68,24 +102,24 @@ export default ({ navigation }) => {
       <SafeAreaView style={styles.screen}>
         <View style={styles.top}>
           <View style={styles.left}>
-            <TouchableOpacity onPress={handleAvatarPress}>
+            <TouchableOpacity onPress={handleShowNavigation}>
               <Image 
                 style={styles.avatar}
                 source={require('../../assets/images/avatar-sample.png')}
                 resizeMode='contain'
               />
             </TouchableOpacity>
-            <Text style={styles.header}>Add Module</Text>
+            <Text style={styles.header}>New Module</Text>
           </View>
           <View style={styles.right}>
-            <TouchableOpacity onPress={handleCancelPress}>
+            <TouchableOpacity onPress={handleCancelProcess}>
               <Image 
                 style={styles.icon}
                 source={require('../../assets/images/cancel-icon.png')}
                 resizeMode='contain'
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSavePress}>
+            <TouchableOpacity onPress={handleCreateModule}>
               <Image 
                 style={styles.icon}
                 source={require('../../assets/images/save-icon.png')}
@@ -141,7 +175,7 @@ export default ({ navigation }) => {
                       mode='time'
                       is24Hour={false}
                       display='spinner'
-                      onChange={onChangeStartTime}
+                      onChange={handleStartTimeUpdate}
                     />
                   )}
                   <Text style={styles.time}> - </Text>
@@ -155,7 +189,7 @@ export default ({ navigation }) => {
                       mode='time'
                       is24Hour={false}
                       display='spinner'
-                      onChange={onChangeEndTime}
+                      onChange={handleEndTimeUpdate}
                     />
                   )}
                 </View>
@@ -172,7 +206,7 @@ export default ({ navigation }) => {
             </View>
             <TouchableOpacity 
               style={styles.button}
-              onPress={handleButtonPress}>
+              onPress={handleAddClass}>
               <Text style={styles.text}>Add class</Text>
             </TouchableOpacity>
           </View>
