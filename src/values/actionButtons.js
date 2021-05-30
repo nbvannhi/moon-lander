@@ -6,9 +6,11 @@ import {
   Image,
   ImageBackground,
   Text,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default class ActionButton extends Component {
   state = {
@@ -19,20 +21,23 @@ export default class ActionButton extends Component {
     if (this._open) {
       Animated.timing(this.state.animation, {
         toValue: 0,
-        duration: 1000,
+        duration: 300,
+        useNativeDriver: false,
       }).start();
 
     } else {
 
       Animated.timing(this.state.animation, {
         toValue: 1,
-        duration: 1000,
+        duration: 300,
+        useNativeDriver: false,
       }).start();
     }
     this._open = !this._open
 
   };
   render() {
+    const { navigation:navigate } = this.props;
     const printInterpolate = this.state.animation.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 50],
@@ -60,7 +65,7 @@ export default class ActionButton extends Component {
     return (
       <View style = {styles.container}>
         <Animated.View style = {styles.background}>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress = {()=> Alert.alert('Hello')}>
             <Animated.View style={[styles.button, saveStyle]}>
                 <Image
                     style={{height:25, width:25}}
@@ -68,7 +73,7 @@ export default class ActionButton extends Component {
                 />
             </Animated.View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress = {()=>this.props.navigation.navigate("Show Menu")}>
             <Animated.View style={[styles.button, printStyle]}>
                 <Image
                     style={{height:25, width:25}}

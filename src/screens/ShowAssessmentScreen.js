@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  Alert,
   Image, 
   ImageBackground, 
   SafeAreaView, 
@@ -31,10 +32,10 @@ export default ({ navigation }) => {
           </View>
           <View></View>
           <View style={styles.container}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>navigation.navigate("Show Events")}>
                      <Text style={styles.title}>Upcoming Events</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress = {() => Alert.alert("Ma1521 4MCs \n Calculus for Computing \n Mon 9:00 to 10:00 \n LEC[1] I3-AUD")}>
                 <Text style={styles.text}> MA1521 Final Exam {"\n"} 21-Nov-2020 2:00 PM 4MC</Text>
               </TouchableOpacity>
           </View>
