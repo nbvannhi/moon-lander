@@ -10,16 +10,37 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
-export default ({ navigation }) => {
+export default ({ route, navigation }) => {
+  const { username, email, password } = route.params
+
   const handleAvatarPress = () => {
-    navigation.navigate('Show Menu')
+    navigation.dispatch(CommonActions.reset({
+      index: 0, 
+      routes: [{
+        name: 'Show Menu', 
+        params: { username, email, password }
+      }]
+    }))
   }
   const handleModuleListPress = () => {
-    navigation.navigate('Show Modules')
+    navigation.dispatch(CommonActions.reset({
+      index: 0, 
+      routes: [{
+        name: 'Show Modules', 
+        params: { username, email, password }
+      }]
+    }))
   }
   const handleAddModulePress = () => {
-    navigation.navigate('Add Module')
+    navigation.dispatch(CommonActions.reset({
+      index: 0, 
+      routes: [{
+        name: 'Add Module', 
+        params: { username, email, password }
+      }]
+    }))
   }
 
   return (

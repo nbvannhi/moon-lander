@@ -9,12 +9,19 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
 export default ({ route, navigation }) => {
   const { username, email, password } = route.params
 
   const handleAvatarPress = () => {
-    navigation.navigate('Show Menu')
+    navigation.dispatch(CommonActions.reset({
+      index: 0, 
+      routes: [{
+        name: 'Show Menu', 
+        params: { username, email, password }
+      }]
+    }))
   }
 
   return (

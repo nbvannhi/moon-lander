@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { 
   ImageBackground, 
   SafeAreaView, 
@@ -9,15 +9,22 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
 export default ({ route, navigation }) => {
   const { username, email } = route.params
-  const [password, setPassword] = React.useState('')
+  const [password, setPassword] = useState('')
 
   const handlePasswordUpdate = (password) => setPassword(password)
-  const handleButtonPress = () => {
+  const handleNextStep = () => {
     setPassword('')
-    navigation.push('Welcome User', { username: username, email: email, password: password })
+    navigation.dispatch(CommonActions.reset({
+      index: 0, 
+      routes: [{
+        name: 'Show Menu', 
+        params: { username, email, password }
+      }]
+    }))
   }
 
   return (
@@ -46,7 +53,7 @@ export default ({ route, navigation }) => {
           />
           <TouchableOpacity 
             style={styles.button}
-            onPress={handleButtonPress}>
+            onPress={handleNextStep}>
             <Text style={styles.text}>Next</Text>
           </TouchableOpacity>
         </View>

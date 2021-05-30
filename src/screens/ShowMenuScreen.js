@@ -15,10 +15,10 @@ import * as Authentication from '../../api/auth'
 export default ({ route, navigation }) => {
   const { username, email, password } = route.params
 
-  const handleProfilePress = () => navigation.navigate('Show Profile', { username, email, password })
-  const handleTimetablePress = () => navigation.navigate('Show Timetable', { username, email, password })
-  const handleAssessmentPress = () => navigation.navigate('Show Assessment', { username, email, password })
-  const handleGradingPress = () => navigation.navigate('Show Grading', { username, email, password })
+  const handleProfilePress = () => navigation.push('Show Profile', { username, email, password })
+  const handleTimetablePress = () => navigation.push('Show Timetable', { username, email, password })
+  const handleAssessmentPress = () => navigation.push('Show Assessment', { username, email, password })
+  const handleGradingPress = () => navigation.push('Show Grading', { username, email, password })
   const handleButtonPress = () => {
     Authentication.signOut(
       () => navigation.dispatch(CommonActions.reset({

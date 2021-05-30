@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { 
   Image, 
   ImageBackground, 
@@ -16,15 +16,14 @@ import { CommonActions } from '@react-navigation/native'
 import * as Authentication from '../../api/auth'
 
 export default LogInScreen = ({ navigation }) => {
-  const [id, setId] = React.useState('')
-  const [password, setPassword] = React.useState('')
-  const [isLoginLoading, setIsLoginLoading] = React.useState(false)
+  const [id, setId] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoginLoading, setIsLoginLoading] = useState(false)
 
   const handleIdUpdate = (id) => setId(id)
   const handlePasswordUpdate = (password) => setPassword(password)
-  const handleButtonPress = () => {
+  const handleLogIn = () => {
     setIsLoginLoading(true)
-
     Authentication.signIn(
       { email: id, password: password }, 
       (user) => navigation.dispatch(CommonActions.reset({
@@ -79,7 +78,7 @@ export default LogInScreen = ({ navigation }) => {
           <TouchableOpacity 
             style={styles.button}
             loading={isLoginLoading}
-            onPress={handleButtonPress}>
+            onPress={handleLogIn}>
             <Text style={styles.text}>Log In</Text>
           </TouchableOpacity>
         </View>
