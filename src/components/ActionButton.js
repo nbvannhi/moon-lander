@@ -1,67 +1,56 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
-  StyleSheet,
-  View,
+  Alert,
   Animated,
   Image,
-  ImageBackground,
-  Text,
-  TouchableOpacity,
+  StyleSheet,
   TouchableWithoutFeedback,
-  Alert,
-} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+  View,
+} from 'react-native'
 
 export default class ActionButton extends Component {
-  state = {
-    animation: new Animated.Value(0),
-  };
+  state = { animation: new Animated.Value(0) }
+  
   toggleOpen = () => {
-
     if (this._open) {
       Animated.timing(this.state.animation, {
         toValue: 0,
         duration: 300,
         useNativeDriver: false,
-      }).start();
-
+      }).start()
     } else {
-
       Animated.timing(this.state.animation, {
         toValue: 1,
         duration: 300,
         useNativeDriver: false,
-      }).start();
+      }).start()
     }
     this._open = !this._open
+  }
 
-  };
   render() {
-    const { navigation:navigate } = this.props;
+    const { navigation:navigate } = this.props
+
     const printInterpolate = this.state.animation.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 50],
-    });
+    })
     const saveInterpolate = this.state.animation.interpolate({
       inputRange: [0, 0.5, 1],
       outputRange: [0, 50, 100],
-    });
+    })
 
     const printStyle = {
       transform: [
-        {
-          translateY: printInterpolate,
-        },
+        { translateY: printInterpolate },
       ],
-    };
-
+    }
     const saveStyle = {
       transform: [
-        {
-          translateY: saveInterpolate,
-        },
+        { translateY: saveInterpolate },
       ],
-    };
+    }
+
     return (
       <View style = {styles.container}>
         <Animated.View style = {styles.background}>
@@ -73,7 +62,7 @@ export default class ActionButton extends Component {
                 />
             </Animated.View>
           </TouchableWithoutFeedback>
-          <TouchableWithoutFeedback onPress = {()=>this.props.navigation.navigate("Show Menu")}>
+          <TouchableWithoutFeedback onPress = {() => this.props.navigation('Show Menu')}>
             <Animated.View style={[styles.button, printStyle]}>
                 <Image
                     style={{height:25, width:25}}
@@ -84,7 +73,7 @@ export default class ActionButton extends Component {
           <TouchableWithoutFeedback onPress={() => this.toggleOpen()}>
             <Animated.View style={styles.button}>
               <Image
-                style={{height:50, width:50}}
+                style={{height: 50, width: 50}}
                 resizeMode="contain"
                 source={require('../../assets/images/avatar-sample.png')}
               />
@@ -97,26 +86,26 @@ export default class ActionButton extends Component {
 }
 
 const styles=StyleSheet.create({
-    container:{
-        flex : 0.2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 25,
-        marginBottom: 30,
-        marginRight: 30,
-        marginLeft: 10,
-    },
-    mainButton:{
-        position: 'absolute',
-        alignItems: 'center',
-        alignSelf: 'center',
-        width: 50,
-        height: 50,
-    },
-    logOut:{
-        alignItems: 'center',
-        alignSelf: 'center',
-    },
+  container:{
+      flex : 0.2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 25,
+      marginBottom: 30,
+      marginRight: 30,
+      marginLeft: 10,
+  },
+  mainButton:{
+      position: 'absolute',
+      alignItems: 'center',
+      alignSelf: 'center',
+      width: 50,
+      height: 50,
+  },
+  logOut:{
+      alignItems: 'center',
+      alignSelf: 'center',
+  },
   button: {
     marginTop: 5,
     position: 'absolute',
@@ -127,6 +116,5 @@ const styles=StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-  }
-
+  }, 
 })

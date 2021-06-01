@@ -4,7 +4,6 @@ import {
   ImageBackground, 
   SafeAreaView, 
   ScrollView, 
-  SectionList, 
   StatusBar, 
   StyleSheet, 
   Text, 
@@ -27,16 +26,22 @@ class Lesson {
   }
 }
 
-export default ({ navigation }) => {
+export default ({ route, navigation }) => {
+  const { moduleId } = route.params
   const userId = Authentication.getCurrentUserId()
+  const module = Modules.reviewModule(
+    { userId, moduleId }, 
+    () => {}, 
+    (error) => console.error(error)
+  )
 
-  const [name, setName] = useState('')
-  const [code, setCode] = useState('')
-  const [lessons, setLessons] = useState([])
-  const [day, setDay] = useState('')
-  const [startTime, setStartTime] = useState('0000')
-  const [endTime, setEndTime] = useState('0000')
-  const [venue, setVenue] = useState('')
+  const [name, setName] = useState(module.name)
+  const [code, setCode] = useState(module.code)
+  const [lessons, setLessons] = useState(module.lessons)
+  const [day, setDay] = useState(lessons[0].day)
+  const [startTime, setStartTime] = useState(lessons[0].startTime)
+  const [endTime, setEndTime] = useState(lessons[0].endTime)
+  const [venue, setVenue] = useState(module.venue)
   const [isVisible, setIsVisible] = useState(false)
 
   const showPicker = () => setIsVisible(true)
@@ -62,12 +67,12 @@ export default ({ navigation }) => {
   const handleVenueUpdate = (venue) => setVenue(venue)
 
   const handleAddLesson = () => {}
-  const handleCreateModule = () => Modules.createModule(
+  const handleUpdateModule = () => Modules.updateModule(
     { userId, name, code, lessons }, 
     () => navigation.navigate('Show Modules'), 
     (error) => console.error(error)
   )
-  const handleDiscardModule = () => navigation.navigate('Show Modules')
+  const handleDiscardChanges = () => navigation.navigate('Show Modules')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
   
   return (
@@ -88,14 +93,14 @@ export default ({ navigation }) => {
             <Text style={styles.header}>New Module</Text>
           </View>
           <View style={styles.right}>
-            <TouchableOpacity onPress={handleDiscardModule}>
+            <TouchableOpacity onPress={handleDiscardChanges}>
               <Image 
                 style={styles.icon}
                 source={require('../../assets/images/cancel-icon.png')}
                 resizeMode='contain'
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleCreateModule}>
+            <TouchableOpacity onPress={handleUpdateModule}>
               <Image 
                 style={styles.icon}
                 source={require('../../assets/images/save-icon.png')}
@@ -108,8 +113,6 @@ export default ({ navigation }) => {
           <View style={styles.container}>
             <TextInput 
               style={styles.field} 
-              placeholder='Module name' 
-              placeholderTextColor='#aaa7b2' 
               value={name}
               selectionColor='#8e8a98'
               maxLength={30} 
@@ -117,8 +120,6 @@ export default ({ navigation }) => {
             />
             <TextInput 
               style={styles.field} 
-              placeholder='Module code' 
-              placeholderTextColor='#aaa7b2' 
               value={code}
               selectionColor='#8e8a98'
               maxLength={10} 
@@ -172,6 +173,8 @@ export default ({ navigation }) => {
               </View>
               <TextInput 
                 style={styles.venue} 
+                placeholder='Venue' 
+                placeholderTextColor='#aaa7b2' 
                 value={venue}
                 selectionColor='#8e8a98'
                 maxLength={30} 

@@ -11,11 +11,11 @@ export const signIn = async ({ email, password }, onSuccess, onError) => {
   }
 }
 
-export const createAccount = async ({ name, email, password }, onSuccess, onError) => {
+export const createAccount = async ({ username, email, password }, onSuccess, onError) => {
   try {
     const { user } = await auth.createUserWithEmailAndPassword(email, password)
     if (user) {
-      await user.updateProfile({ displayName: name })
+      await user.updateProfile({ displayName: username })
       await user.sendEmailVerification()
       return onSuccess(user)
     }
@@ -35,7 +35,7 @@ export const signOut = async (onSuccess, onError) => {
 
 export const getCurrentUserId = () => auth.currentUser ? auth.currentUser.uid : null
 
-export const getCurrentUserName = () => auth.currentUser ? auth.currentUser.displayName : null
+export const getCurrentUserUsername = () => auth.currentUser ? auth.currentUser.displayName : null
 
 export const setOnAuthStageChanged = (onUserAuthenticated, onUserNotFound) => auth.onAuthStateChanged(
   (user) => user ? onUserAuthenticated(user) : onUserNotFound(user))
