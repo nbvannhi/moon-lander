@@ -9,23 +9,13 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 
 export default ({ route, navigation }) => {
   const { username } = route.params
   const [email, setEmail] = useState('')
 
   const handleEmailUpdate = (email) => setEmail(email)
-  const handleNextStep = () => {
-    setEmail('')
-    navigation.dispatch(CommonActions.reset({
-      index: 0, 
-      routes: [{
-        name: 'Create Password', 
-        params: { username, email }
-      }]
-    }))
-  }
+  const handleNextStep = () => navigation.push('Create Password', { username, email })
 
   return (
     <ImageBackground

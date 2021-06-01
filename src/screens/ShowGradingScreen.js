@@ -35,7 +35,10 @@ export default ({ navigation }) => {
           </View>
           <View style={styles.container}>
             <Text style={styles.text}>
-              Sorry, this feature is currently unavailable :(.
+              This feature is currently unavailable :(.
+              Overall, your academic performance records will be displayed here, module by module. 
+              It is going to show your percentage of completion of each module based on your exam grades.
+              E.g., if you achieve maximum grades for all assessments then the corresponding percentage is 100%.
             </Text>
           </View>
         </ScrollView>
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
     paddingTop: 20, 
   }, 
   avatar: {
-    marginRight: 20, 
+    marginRight: 10, 
     width: 50, 
     height: 50, 
   }, 

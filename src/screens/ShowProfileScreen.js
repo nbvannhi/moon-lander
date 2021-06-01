@@ -9,19 +9,14 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 
-export default ({ route, navigation }) => {
-  const { username, email, password } = route.params
+import * as Authentication from '../../api/auth'
+
+export default ({ navigation }) => {
+  const username = Authentication.getCurrentUserUsername()
 
   const handleAvatarPress = () => {
-    navigation.dispatch(CommonActions.reset({
-      index: 0, 
-      routes: [{
-        name: 'Show Menu', 
-        params: { username, email, password }
-      }]
-    }))
+    navigation.navigate('Show Menu')
   }
 
   return (
@@ -37,13 +32,10 @@ export default ({ route, navigation }) => {
           />
         </TouchableOpacity>
         <View style={styles.container}>
-          <Text style={styles.title}>Hi, {JSON.stringify(username).replace(/['"]+/g, '')}</Text>
+          <Text style={styles.title}>Hi, {username}</Text>
           <Text style={styles.subtitle}>
-            Your profile details will be displayed here. 
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-            when an unknown printer took a galley of type and 
-            scrambled it to make a type specimen book.
+            Your profile details will be displayed here.
+            There will also be a feature allowing you to customise your avatar.
           </Text>
         </View>
       </SafeAreaView>

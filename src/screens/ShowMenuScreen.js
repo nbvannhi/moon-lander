@@ -8,26 +8,21 @@ import {
   Text, 
   TouchableOpacity
 } from 'react-native'
-import { CommonActions } from "@react-navigation/native"
 
 import * as Authentication from '../../api/auth'
 
-export default ({ route, navigation }) => {
-  const { username, email, password } = route.params
-
-  const handleProfilePress = () => navigation.push('Show Profile', { username, email, password })
-  const handleTimetablePress = () => navigation.push('Show Timetable', { username, email, password })
-  const handleAssessmentPress = () => navigation.push('Show Assessment', { username, email, password })
-  const handleGradingPress = () => navigation.push('Show Grading', { username, email, password })
-  const handleButtonPress = () => {
+export default ({ navigation }) => {
+  const handleShowProfile = () => navigation.navigate('Show Profile')
+  const handleShowTimetable = () => navigation.navigate('Show Timetable')
+  const handleShowAssessment = () => navigation.navigate('Show Assessment')
+  const handleShowGrading = () => navigation.navigate('Show Grading')
+  const handleLogOut = () => {
     Authentication.signOut(
-      () => navigation.dispatch(CommonActions.reset({
-        index: 0, 
-        routes: [{ name: 'Log In' }]
-      })), 
+      () => navigation.navigate('Log In'), 
       (error) => console.error(error)
     )
   }
+
   return (
     <ImageBackground
       style={styles.background}
@@ -36,7 +31,7 @@ export default ({ route, navigation }) => {
       <SafeAreaView style={styles.screen}>
         <TouchableOpacity 
           style={styles.container}
-          onPress={handleProfilePress}
+          onPress={handleShowProfile}
         >
           <Image 
             style={styles.logo}
@@ -47,7 +42,7 @@ export default ({ route, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.container}
-          onPress={handleTimetablePress}
+          onPress={handleShowTimetable}
         >
           <Image 
             style={styles.logo}
@@ -58,7 +53,7 @@ export default ({ route, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.container}
-          onPress={handleAssessmentPress}
+          onPress={handleShowAssessment}
         >
           <Image 
             style={styles.logo}
@@ -69,7 +64,7 @@ export default ({ route, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.container}
-          onPress={handleGradingPress}
+          onPress={handleShowGrading}
         >
           <Image 
             style={styles.logo}
@@ -79,9 +74,15 @@ export default ({ route, navigation }) => {
           <Text style={styles.title}>GRADING</Text>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={styles.button}
-          onPress={handleButtonPress}>
-          <Text style={styles.text}>Sign Out</Text>
+          style={styles.container}
+          onPress={handleLogOut}
+        >
+          <Image 
+            style={styles.logo}
+            source={require('../../assets/images/logout-logo.png')}
+            resizeMode='contain'
+          />
+          <Text style={styles.title}>LOGOUT</Text>
         </TouchableOpacity>
       </SafeAreaView>
     </ImageBackground>

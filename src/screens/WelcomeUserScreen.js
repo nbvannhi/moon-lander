@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState } from 'react'
 import { 
   ImageBackground, 
   SafeAreaView, 
@@ -9,26 +9,18 @@ import {
   View 
 } from 'react-native'
 import { Divider } from 'react-native-elements'
-import { CommonActions } from "@react-navigation/native"
 
 import * as Authentication from '../../api/auth'
 
 export default ({ route, navigation}) => {
   const { username, email, password } = route.params
-  const [isSignupLoading, setIsSignupLoading] = React.useState(false)
+  const [isSignupLoading, setIsSignupLoading] = useState(false)
 
   const handleButtonPress = () => {
     setIsSignupLoading(true)
-
     Authentication.createAccount(
-      { name: username, email: email, password: password }, 
-      (user) => navigation.dispatch(CommonActions.reset({
-        index: 0, 
-        routes: [{
-          name: 'Show Menu', 
-          params: { username: user.displayName, email, password }
-        }]
-      })), 
+      { username, email, password }, 
+      () => navigation.navigate('Show Menu'), 
       (error) => {
         setIsSignupLoading(false)
         return console.error(error)

@@ -11,7 +11,6 @@ import {
   View 
 } from 'react-native'
 import { Divider } from 'react-native-elements'
-import { CommonActions } from '@react-navigation/native'
 
 import * as Authentication from '../../api/auth'
 
@@ -25,23 +24,15 @@ export default LogInScreen = ({ navigation }) => {
   const handleLogIn = () => {
     setIsLoginLoading(true)
     Authentication.signIn(
-      { email: id, password: password }, 
-      (user) => navigation.dispatch(CommonActions.reset({
-        index: 0, 
-        routes: [{
-          name: 'Show Menu', 
-          params: { username: user.displayName, email: id, password }
-        }]
-      })), 
+      { email: id, password }, 
+      () => navigation.navigate('Show Menu'), 
       (error) => {
         setIsLoginLoading(false)
         return console.error(error)
       }
     )
   }
-  const handleTextPress = () => {
-    navigation.navigate('Choose Username')
-  }
+  const handleSignUp = () => navigation.navigate('Choose Username')
 
   return(
     <ImageBackground
@@ -86,7 +77,7 @@ export default LogInScreen = ({ navigation }) => {
       <Divider style={styles.divider} />
       <View style={styles.bottom}>
         <Text style={styles.footer}>Unhappy with landing among the stars? </Text>
-        <TouchableOpacity onPress={handleTextPress}>
+        <TouchableOpacity onPress={handleSignUp}>
           <Text style={styles.link}>Sign up.</Text>
         </TouchableOpacity>
       </View>

@@ -10,10 +10,19 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
+import { CommonActions } from '@react-navigation/native'
 
-export default ({ navigation }) => {
-  const handleAvatarPress = () => {
-    navigation.navigate('Show Menu')
+export default ({ route, navigation }) => {
+  const { username, email, password } = route.params
+  
+  const handleShowNavigation = () => {
+    navigation.dispatch(CommonActions.reset({
+      index: 0, 
+      routes: [{
+        name: 'Show Menu', 
+        params: { username, email, password }
+      }]
+    }))
   }
 
   return (
@@ -24,7 +33,7 @@ export default ({ navigation }) => {
       <SafeAreaView style={styles.screen}>
         <ScrollView>
           <View style={styles.top}>
-            <TouchableOpacity onPress={handleAvatarPress}>
+            <TouchableOpacity onPress={handleShowNavigation}>
               <Image 
                 style={styles.avatar}
                 source={require('../../assets/images/avatar-sample.png')}

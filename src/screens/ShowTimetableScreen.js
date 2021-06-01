@@ -10,38 +10,10 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
 
-export default ({ route, navigation }) => {
-  const { username, email, password } = route.params
-
-  const handleAvatarPress = () => {
-    navigation.dispatch(CommonActions.reset({
-      index: 0, 
-      routes: [{
-        name: 'Show Menu', 
-        params: { username, email, password }
-      }]
-    }))
-  }
-  const handleModuleListPress = () => {
-    navigation.dispatch(CommonActions.reset({
-      index: 0, 
-      routes: [{
-        name: 'Show Modules', 
-        params: { username, email, password }
-      }]
-    }))
-  }
-  const handleAddModulePress = () => {
-    navigation.dispatch(CommonActions.reset({
-      index: 0, 
-      routes: [{
-        name: 'Add Module', 
-        params: { username, email, password }
-      }]
-    }))
-  }
+export default ({ navigation }) => {
+  const handleShowModules = () => navigation.navigate('Show Modules')
+  const handleShowNavigation = () => navigation.navigate('Show Menu')
 
   return (
     <ImageBackground
@@ -49,38 +21,33 @@ export default ({ route, navigation }) => {
       source={require('../../assets/images/background.png')}
     >
       <SafeAreaView style={styles.screen}>
-        <View style={styles.top}>
-          <View style={styles.left}>
-            <TouchableOpacity onPress={handleAvatarPress}>
-              <Image 
-                style={styles.avatar}
-                source={require('../../assets/images/avatar-sample.png')}
-                resizeMode='contain'
-              />
-            </TouchableOpacity>
-            <Text style={styles.header}>Timetable</Text>
-          </View>
-          <View style={styles.right}>
-            <TouchableOpacity onPress={handleModuleListPress}>
-              <Image 
-                style={styles.icon}
-                source={require('../../assets/images/search-icon.png')}
-                resizeMode='contain'
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleAddModulePress}>
-              <Image 
-                style={styles.icon}
-                source={require('../../assets/images/add-icon.png')}
-                resizeMode='contain'
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
         <ScrollView>
+        <View style={styles.top}>
+            <View style={styles.left}>
+              <TouchableOpacity onPress={handleShowNavigation}>
+                <Image 
+                  style={styles.avatar}
+                  source={require('../../assets/images/avatar-sample.png')}
+                  resizeMode='contain'
+                />
+              </TouchableOpacity>
+              <Text style={styles.header}>Timetable</Text>
+            </View>
+            <View style={styles.right}>
+              <TouchableOpacity onPress={handleShowModules}>
+                <Image 
+                  style={styles.icon}
+                  source={require('../../assets/images/list-icon.png')}
+                  resizeMode='contain'
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
           <View style={styles.container}>
             <Text style={styles.text}>
-              Sorry, this feature is currently unavailable :(.
+              This feature is currently unavailable :(.
+              Overall, your current timetable, similar to the one on NUSMODS will be displayed here.
+              You can choose to view all your current modules / add new module throung the two buttons on the header.
             </Text>
           </View>
         </ScrollView>
@@ -108,7 +75,6 @@ const styles = StyleSheet.create({
     flex: 0.92, 
     alignItems: 'center', 
     paddingHorizontal: 40, 
-    paddingTop: 20, 
   }, 
   left: {
     flexDirection: 'row', 
