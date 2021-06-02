@@ -15,8 +15,8 @@ export const createEvent = async ({ userId, moduleCode, type, percentage, dates 
 }
 
 export const reviewEvent = async ({ userId, eventId }, onSuccess, onError) => {
-  const event = db.ref(`event/${userId}/${moduleId}`)
-  module.on('value', (snapshot) => onValueChanged(snapshot.val()))
+  const event = db.ref(`event/${userId}/${eventId}`)
+  event.on('value', (snapshot) => onValueChanged(snapshot.val()))
   return () => event.off('value')
 }
 
@@ -41,6 +41,6 @@ export const deleteEvent = async ({ userId, eventId }, onSuccess, onError) => {
 
 export const subscribe = (userId, onValueChanged) => {
   const events = db.ref(`events/${userId}`)
-  modules.on('value', (snapshot) => onValueChanged(snapshot.val()))
+  events.on('value', (snapshot) => onValueChanged(snapshot.val()))
   return () => events.off('value')
 }

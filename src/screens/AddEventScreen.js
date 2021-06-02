@@ -31,7 +31,7 @@ export default ({ navigation }) => {
 
   const [moduleCode, setModuleCode] = useState('')
   const [type, setType] = useState('')
-  const [date, setDate] = useState([])
+  const [dates, setDates] = useState([])
   const [day, setDay] = useState('')
   const [startTime, setStartTime] = useState('0000')
   const [duration, setDuration] = useState('0')
@@ -44,7 +44,7 @@ export default ({ navigation }) => {
   const handleDateUpdate = (day, startTime, duration) => {
     const date = new Date(day, startTime, duration)
     dates.push(date)
-    setDate(dates)
+    setDates(dates)
   }
   const handleDayUpdate = (itemValue, itemIndex) => setDay(itemValue)
   const handleTimeUpdate = (type) => (event, selectedValue) => {
@@ -161,11 +161,11 @@ export default ({ navigation }) => {
                 maxLength={30}
                 onChangeText={handleDurationUpdate}
               />
-              {handleLessonsUpdate(day, startTime, duration)}
+              {handleDateUpdate(day, startTime, duration)}
             </View>
             <TouchableOpacity
               style={styles.button}
-              onPress={handleAddLesson}>
+              onPress={handleAddDate}>
               <Text style={styles.text}>Add date</Text>
             </TouchableOpacity>
           </View>
