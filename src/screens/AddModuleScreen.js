@@ -34,39 +34,53 @@ export default ({ navigation }) => {
   const [code, setCode] = useState('')
   const [lessons, setLessons] = useState([])
   const [day, setDay] = useState('')
-  const [startTime, setStartTime] = useState('0000')
-  const [endTime, setEndTime] = useState('0000')
+  const [startTime, setStartTime] = useState(new Date(2021, 1, 1, 0, 0))
+  const [endTime, setEndTime] = useState(new Date(2021, 1, 1, 0, 0))
   const [venue, setVenue] = useState('')
-  const [isVisible, setIsVisible] = useState(false)
+  const [isStartPickerShown, setIsStartPickerShown] = useState(false)
+  const [isEndPickerShown, setIsEndPickerShown] = useState(false)
 
-  const showPicker = () => setIsVisible(true)
+  const showStartPicker = () => setIsStartPickerShown(true)
+  const showEndPicker = () => setIsEndPickerShown(true)
+  const showTime = (time) => {
+    const hour = formatTime(time.getHours())
+    const minute = formatTime(time.getMinutes())
+    return hour + minute
+  }
+  
+  const formatTime = (time) => time < 9 ? '0' + time.toString() : time.toString()
 
   const handleNameUpdate = (name) => setName(name)
   const handleCodeUpdate = (code) => setCode(code)
   const handleLessonsUpdate = (day, startTime, endTime, venue) => {
-    const lesson = new Lesson(day, startTime, endTime, venue)
+    const startTimeStr = showTime(startTime)
+    const endTimeStr = showTime(endTime)
+    const lesson = new Lesson(day, startTimeStr, endTimeStr, venue)
     lessons.push(lesson)
     setLessons(lessons)
   }
   const handleDayUpdate = (itemValue, itemIndex) => setDay(itemValue)
-  const handleTimeUpdate = (type) => (event, selectedValue) => {
-    const selectedTime = selectedValue || new Date()
-    const hour = selectedTime.getHours()
-    const minute = selectedTime.getMinutes()
-    const selectedHour = hour < 9 ? '0' + hour.toString() : hour.toString()
-    const selectedMinute = minute < 9 ? '0' + minute.toString() : minute.toString()
-    if (type === 'START') setStartTime(selectedHour + selectedMinute)
-    if (type === 'END') setEndTime(selectedHour + selectedMinute)
-    setIsVisible(false)
+  const handleStartTimeUpdate = (event, selectedValue) => {
+    const selectedTime = selectedValue || startTime
+    setStartTime(selectedTime)
+    setIsStartPickerShown(false)
+  }
+  const handleEndTimeUpdate = (event, selectedValue) => {
+    const selectedTime = selectedValue || endTime
+    setEndTime(selectedTime)
+    setIsEndPickerShown(false)
   }
   const handleVenueUpdate = (venue) => setVenue(venue)
 
   const handleAddLesson = () => {}
-  const handleCreateModule = () => Modules.createModule(
-    { userId, name, code, lessons }, 
-    () => navigation.navigate('Show Modules'), 
-    (error) => console.error(error)
-  )
+  const handleCreateModule = () => {
+    handleLessonsUpdate(day, startTime, endTime, venue)
+    Modules.createModule(
+      { userId, name, code, lessons }, 
+      () => navigation.navigate('Show Modules'), 
+      (error) => console.error(error)
+    )
+  }
   const handleDiscardModule = () => navigation.navigate('Show Modules')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
   
@@ -141,31 +155,31 @@ export default ({ navigation }) => {
                   <Picker.Item style={styles} label='Sunday' value='SUN' />
                 </Picker>
                 <View style={styles.picker}>
-                  <TouchableOpacity onPress={showPicker}>
-                    <Text style={styles.time}>{startTime}</Text>
+                  <TouchableOpacity onPress={showStartPicker}>
+                    <Text style={styles.time}>{showTime(startTime)}</Text>
                   </TouchableOpacity>
-                  {isVisible && (
+                  {isStartPickerShown && (
                     <DateTimePicker
                       testID='dateTimePicker'
                       value={startTime}
                       mode='time'
                       is24Hour={false}
                       display='spinner'
-                      onChange={handleTimeUpdate('START')}
+                      onChange={handleStartTimeUpdate}
                     />
                   )}
                   <Text style={styles.time}> - </Text>
-                  <TouchableOpacity onPress={showPicker}>
-                    <Text style={styles.time}>{endTime}</Text>
+                  <TouchableOpacity onPress={showEndPicker}>
+                    <Text style={styles.time}>{showTime(endTime)}</Text>
                   </TouchableOpacity>
-                  {isVisible && (
+                  {isEndPickerShown && (
                     <DateTimePicker
                       testID='dateTimePicker'
                       value={endTime}
                       mode='time'
                       is24Hour={false}
                       display='spinner'
-                      onChange={handleTimeUpdate('END')}
+                      onChange={handleEndTimeUpdate}
                     />
                   )}
                 </View>
@@ -177,7 +191,6 @@ export default ({ navigation }) => {
                 maxLength={30} 
                 onChangeText={handleVenueUpdate} 
               />
-              {handleLessonsUpdate(day, startTime, endTime, venue)}
             </View>
             <TouchableOpacity 
               style={styles.button}

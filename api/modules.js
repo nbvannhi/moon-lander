@@ -14,8 +14,8 @@ export const createModule = async ({ userId, name, code, lessons }, onSuccess, o
   }
 }
 
-export const reviewModule = async ({ userId, moduleId }, onSuccess, onError) => {
-  const module = db.ref(`module/${userId}/${moduleId}`)
+export const reviewModule = ({ userId, moduleId }, onValueChanged) => {
+  const module = db.ref(`modules/${userId}/${moduleId}`)
   module.on('value', (snapshot) => onValueChanged(snapshot.val()))
   return () => module.off('value')
 }

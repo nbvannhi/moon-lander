@@ -13,7 +13,6 @@ import {
   View 
 } from 'react-native'
 import { Divider } from 'react-native-elements'
-import { CommonActions } from '@react-navigation/native'
 
 import * as Authentication from '../../api/auth'
 import * as Modules from '../../api/modules'
@@ -42,16 +41,18 @@ export default ({ navigation }) => {
   const handleCloseModal = () => setIsVisible(!isVisible)
 
   const handleEditModule = (moduleId) => navigation.push('Edit Module', { moduleId })
-  const handleDeleteModule = (moduleId) => Modules.deleteModule(
+  const handleDeleteModule = (moduleId) => {
+    console.log(moduleId)
+    Modules.deleteModule(
     { userId, moduleId }, 
     () =>  setIsVisible(false), 
     (error) => console.error(error)
-  )
+  )}
 
   const handleAddModule = () => navigation.navigate('Add Module')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
 
-  const renderModuleList = ({ item }) => {
+  const renderModuleList = ({ item, index }) => {
     return (
       <View style={{ flex: 0.92 }}>
         <Modal 

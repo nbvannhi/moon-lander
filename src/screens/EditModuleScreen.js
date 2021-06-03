@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
   Image, 
   ImageBackground, 
@@ -29,49 +29,92 @@ class Lesson {
 export default ({ route, navigation }) => {
   const { moduleId } = route.params
   const userId = Authentication.getCurrentUserId()
-  const module = Modules.reviewModule(
-    { userId, moduleId }, 
-    () => {}, 
-    (error) => console.error(error)
-  )
+  console.log(moduleId)
 
-  const [name, setName] = useState(module.name)
-  const [code, setCode] = useState(module.code)
-  const [lessons, setLessons] = useState(module.lessons)
-  const [day, setDay] = useState(lessons[0].day)
-  const [startTime, setStartTime] = useState(lessons[0].startTime)
-  const [endTime, setEndTime] = useState(lessons[0].endTime)
-  const [venue, setVenue] = useState(module.venue)
-  const [isVisible, setIsVisible] = useState(false)
+  const [module, setModule] = useState({})
+  const [name, setName] = useState('')
+  const [code, setCode] = useState('')
+  const [lessons, setLessons] = useState({})
+  const [lessonList, setLessonList] = useState([])
+  const [day, setDay] = useState('')
+  const [startTime, setStartTime] = useState('0000')
+  const [endTime, setEndTime] = useState('0000')
+  const [venue, setVenue] = useState('')
 
-  const showPicker = () => setIsVisible(true)
+  useEffect(() => {
+    return Modules.reviewModule({ userId, moduleId }, setModule)
+  }, [])
 
+  useEffect(() => {
+    if (module) {
+      setName(module.name)
+      setCode(module.code)
+      setLessons(module.lessons)
+    }
+  }, [module])
+
+  useEffect(() => {
+    if (lessons) {
+      const lessonsTemp = []
+      const lessonsArray = Object.values(lessons)
+      if (lessonsArray.length > 0) lessonsTemp.push({ data: lessonsArray })
+      setLessonList(lessonsTemp)
+      if (lessonsTemp.length > 0) {
+        setDay(lessons[0].day)
+        setStartTime(lessons[0].startTime)
+        setEndTime(lessons[0].endTime)
+        setVenue(lessons[0].venue)
+      }
+    }
+  }, [lessons])
+
+  const [startDate, setStartDate] = useState(new Date(2021, 1, 1, 0, 0))
+  const [endDate, setEndDate] = useState(new Date(2021, 1, 1, 0, 0))
+  const [isStartPickerShown, setIsStartPickerShown] = useState(false)
+  const [isEndPickerShown, setIsEndPickerShown] = useState(false)
+
+  const showStartPicker = () => setIsStartPickerShown(true)
+  const showEndPicker = () => setIsEndPickerShown(true)
+  const showTime = (time) => {
+    const hour = formatTime(time.getHours())
+    const minute = formatTime(time.getMinutes())
+    return hour + minute
+  }
+  
+  const formatTime = (time) => time < 9 ? '0' + time.toString() : time.toString()  
   const handleNameUpdate = (name) => setName(name)
   const handleCodeUpdate = (code) => setCode(code)
   const handleLessonsUpdate = (day, startTime, endTime, venue) => {
-    const lesson = new Lesson(day, startTime, endTime, venue)
-    lessons.push(lesson)
-    setLessons(lessons)
+    const startTimeStr = showTime(startTime)
+    const endTimeStr = showTime(endTime)
+    const lesson = new Lesson(day, startTimeStr, endTimeStr, venue)
+    lessonList.push(lesson)
+    setLessonList(lessons)
   }
   const handleDayUpdate = (itemValue, itemIndex) => setDay(itemValue)
-  const handleTimeUpdate = (type) => (event, selectedValue) => {
-    const selectedTime = selectedValue || new Date()
-    const hour = selectedTime.getHours()
-    const minute = selectedTime.getMinutes()
-    const selectedHour = hour < 9 ? '0' + hour.toString() : hour.toString()
-    const selectedMinute = minute < 9 ? '0' + minute.toString() : minute.toString()
-    if (type === 'START') setStartTime(selectedHour + selectedMinute)
-    if (type === 'END') setEndTime(selectedHour + selectedMinute)
-    setIsVisible(false)
+  const handleStartDateUpdate = (event, selectedValue) => {
+    const selectedDate = selectedValue || startDate
+    setStartTime(showTime(selectedDate))
+    setStartDate(selectedDate)
+    setIsStartPickerShown(false)
+  }
+  const handleEndDateUpdate = (event, selectedValue) => {
+    const selectedDate = selectedValue || endDate
+    setEndTime(showTime(selectedDate))
+    setEndDate(selectedDate)
+    setIsEndPickerShown(false)
   }
   const handleVenueUpdate = (venue) => setVenue(venue)
 
   const handleAddLesson = () => {}
-  const handleUpdateModule = () => Modules.updateModule(
-    { userId, name, code, lessons }, 
-    () => navigation.navigate('Show Modules'), 
-    (error) => console.error(error)
-  )
+  const handleUpdateModule = () => {
+    handleLessonsUpdate(day, startTime, endTime, venue)
+    Modules.updateModule(
+      { userId, name, code, lessons }, 
+      () => navigation.navigate('Show Modules'), 
+      (error) => console.error(error)
+    )
+  }
   const handleDiscardChanges = () => navigation.navigate('Show Modules')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
   
@@ -90,7 +133,7 @@ export default ({ route, navigation }) => {
                 resizeMode='contain'
               />
             </TouchableOpacity>
-            <Text style={styles.header}>New Module</Text>
+            <Text style={styles.header}>Edit Module</Text>
           </View>
           <View style={styles.right}>
             <TouchableOpacity onPress={handleDiscardChanges}>
@@ -142,31 +185,31 @@ export default ({ route, navigation }) => {
                   <Picker.Item style={styles} label='Sunday' value='SUN' />
                 </Picker>
                 <View style={styles.picker}>
-                  <TouchableOpacity onPress={showPicker}>
+                  <TouchableOpacity onPress={showStartPicker}>
                     <Text style={styles.time}>{startTime}</Text>
                   </TouchableOpacity>
-                  {isVisible && (
+                  {isStartPickerShown && (
                     <DateTimePicker
                       testID='dateTimePicker'
-                      value={startTime}
+                      value={startDate}
                       mode='time'
                       is24Hour={false}
                       display='spinner'
-                      onChange={handleTimeUpdate('START')}
+                      onChange={handleStartDateUpdate}
                     />
                   )}
                   <Text style={styles.time}> - </Text>
-                  <TouchableOpacity onPress={showPicker}>
+                  <TouchableOpacity onPress={showEndPicker}>
                     <Text style={styles.time}>{endTime}</Text>
                   </TouchableOpacity>
-                  {isVisible && (
+                  {isEndPickerShown && (
                     <DateTimePicker
                       testID='dateTimePicker'
-                      value={endTime}
+                      value={endDate}
                       mode='time'
                       is24Hour={false}
                       display='spinner'
-                      onChange={handleTimeUpdate('END')}
+                      onChange={handleEndDateUpdate}
                     />
                   )}
                 </View>
@@ -180,7 +223,6 @@ export default ({ route, navigation }) => {
                 maxLength={30} 
                 onChangeText={handleVenueUpdate} 
               />
-              {handleLessonsUpdate(day, startTime, endTime, venue)}
             </View>
             <TouchableOpacity 
               style={styles.button}
