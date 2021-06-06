@@ -16,6 +16,7 @@ import { Divider } from 'react-native-elements'
 
 import * as Authentication from '../../api/auth'
 import * as Modules from '../../api/modules'
+import * as Events from '../../api/events'
 
 export default ({ navigation }) => {
   const userId = Authentication.getCurrentUserId()
@@ -25,9 +26,13 @@ export default ({ navigation }) => {
   const [eventList, setEventList] = useState([])
   const [moduleList, setModuleList] = useState([])
   const [isVisible, setIsVisible] = useState(false)
+  const [isEventVisible, setIsEventVisible] = useState(false)
 
   useEffect(() => {
     return Modules.subscribe(userId, setModules)
+  }, [])
+  useEffect(() => {
+    return Events.subscribe(userId, setEvents)
   }, [])
 
   useEffect(() => {
@@ -38,16 +43,30 @@ export default ({ navigation }) => {
       setModuleList(modulesTemp)
     }
   }, [modules])
+  useEffect(() => {
+    if (events) {
+      const eventsTemp = []
+      const eventsArray = Object.values(events)
+      if (eventsArray.length > 0) eventsTemp.push({ data: eventsArray })
+      setEventList(eventsTemp)
+    }
+  }, [events])
+
 
   const handleShowModal = () => setIsVisible(true)
   const handleCloseModal = () => setIsVisible(!isVisible)
 
-  const handleEditEvent = () => {
+  const handleShowEventModal = () => setIsEventVisible(true)
+  const handleCloseEventModal = () => setIsEventVisible(!isEventVisible)
 
-  }
-  const handleDeleteEvent = () => {
+  const handleEditEvent = (eventId) => navigation.push('Edit Event', { eventId })
+  const handleDeleteEvent = (eventId) => Events.deleteEvent(
+    { userId, eventId },
+    () => setIsVisible(false),
+    (error) => console.error(error)
+  )
 
-  }
+
 
   const handleEditModule = (moduleId) => navigation.push('Edit Module', { moduleId })
   const handleDeleteModule = (moduleId) => Modules.deleteModule(
@@ -97,6 +116,43 @@ export default ({ navigation }) => {
     )
   }
 
+  const renderEventList = ({ item }) => {
+    return (
+      <View style={{ flex: 0.92 }}>
+        <Modal
+          animationType='fade'
+          transparent={true}
+          visible={isEventVisible}
+          onRequestClose={handleCloseEventModal}
+        >
+          <View style={styles.center}>
+            <View style={styles.detail}>
+              <Text style={styles.name}>
+                Events details such as event title, note, date and time will be displayed here.
+                You can choose to edit or remove an event from here too.
+              </Text>
+              <View style={styles.button}>
+                <TouchableOpacity onPress={handleCloseEventModal}>
+                  <Text style={styles.text}>Close</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleEditEvent(item.id)}>
+                  <Text style={styles.text}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDeleteEvent(item.id)}>
+                  <Text style={styles.text}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <TouchableOpacity style={styles.item} onPress={handleShowEventModal}>
+          <Text style={styles.code}>{item.code}</Text>
+          <Text style={styles.name}>{item.name}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   return (
     <ImageBackground
       style={styles.background}
@@ -122,8 +178,8 @@ export default ({ navigation }) => {
             </TouchableOpacity>
             <SectionList 
               style={styles.list}
-              sections={moduleList}
-              renderItem={renderModuleList}
+              sections={eventList}
+              renderItem={renderEventList}
               ItemSeparatorComponent={() => <Divider style={styles.divider} />}
             />       
           </View>

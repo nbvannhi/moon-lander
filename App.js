@@ -24,6 +24,7 @@ import AddModuleScreen from './src/screens/AddModuleScreen'
 import EditModuleScreen from './src/screens/EditModuleScreen'
 
 import AddEventScreen from './src/screens/AddEventScreen'
+import EditEventScreen from './src/screens/EditEventScreen'
 
 const Stack = createStackNavigator()
 
@@ -52,6 +53,7 @@ export default function App() {
         <Stack.Screen name='Add Module' component={AddModuleScreen} />
         <Stack.Screen name='Edit Module' component={EditModuleScreen} />
         <Stack.Screen name='Add Event' component={AddEventScreen} />
+        <Stack.Screen name='Edit Event' component={EditEventScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   )

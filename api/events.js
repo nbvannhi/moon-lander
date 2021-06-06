@@ -2,28 +2,28 @@ import firebase from './firebase'
 
 const db = firebase.database()
 
-const newEvent = (id, moduleCode, type, percentage, dates) => ({ id, type, percentage, dates })
+const newEvent = (id, title, note, date, time) => ({ id, title, note, date, time })
 
-export const createEvent = async ({ userId, moduleCode, type, percentage, dates }, onSuccess, onError) => {
+export const createEvent = async ({ userId, title, note, date, time }, onSuccess, onError) => {
   try {
     const event = db.ref(`events/${userId}`).push()
-    await event.set(newModule(event.key, moduleCode, type, percentage, dates))
+    await event.set(newEvent(event.key, title, note, date, time))
     return onSuccess(event)
   } catch (error) {
     return onError(error)
   }
 }
 
-export const reviewEvent = async ({ userId, eventId }, onSuccess, onError) => {
-  const event = db.ref(`event/${userId}/${eventId}`)
+export const reviewEvent = ({ userId, eventId }, onValueChanged) => {
+  const event = db.ref(`events/${userId}/${eventId}`)
   event.on('value', (snapshot) => onValueChanged(snapshot.val()))
   return () => event.off('value')
 }
 
-export const updateEvent = async ({ userId, eventId }, { moduleCode, type, percentage, dates }, onSuccess, onError) => {
+export const updateEvent = async ({ userId, eventId }, {title, note, date, time }, onSuccess, onError) => {
   try {
     const event = db.ref(`events/${userId}/${eventId}`)
-    await event.update({ moduleCode, type, percentage, dates })
+    await event.update({ title, note, date, time })
     return onSuccess(event)
   } catch (error) {
     return onError(error)

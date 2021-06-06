@@ -51,7 +51,7 @@ export default ({ navigation }) => {
   const handleAddEvent = () => navigation.navigate('Add Event')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
 
-  const renderEventList = ({ item }) => {
+  const renderEventList = ({ item, index }) => {
     return (
       <View style={{ flex: 0.92 }}>
         <Modal
@@ -63,8 +63,8 @@ export default ({ navigation }) => {
           <View style={styles.center}>
             <View style={styles.detail}>
               <Text style={styles.name}>
-                Events details such as module code, type and percentage will be displayed here.
-                You can choose to edit or remove a event from here too.
+                Events details such as event title, note, date and time will be displayed here.
+                You can choose to edit or remove an event from here too.
               </Text>
               <View style={styles.button}>
                 <TouchableOpacity onPress={handleCloseModal}>

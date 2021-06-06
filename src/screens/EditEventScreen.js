@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Image,
   ImageBackground,
@@ -19,31 +19,47 @@ import * as Authentication from '../../api/auth'
 import * as Events from '../../api/events'
 
 
-export default ({ navigation }) => {
+export default ({ route, navigation }) => {
+  const { eventId } = route.params
   const userId = Authentication.getCurrentUserId()
+  console.log(eventId)
 
+  const [event, setEvent] = useState({})
   const [title, setTitle] = useState('')
   const [note, setNote] = useState('')
   const [date, setDate] = useState(new Date(2021, 0, 1, 0, 0))
-  const [time, setTime] = useState(new Date(2021, 1, 1, 0, 0))
+  const [time, setTime] = useState('0000')
+
+  useEffect(() => {
+    return Events.reviewEvent({ userId, eventId }, setEvent)
+  }, [])
+
+  useEffect(() => {
+    if (event) {
+      setTitle(event.title)
+      setNote(event.note)
+      setDate(event.date)
+      setTime(event.time)
+    }
+  }, [event])
 
   const [isDatePickerShown, setIsDatePickerShown] = useState(false)
   const [isTimePickerShown, setIsTimePickerShown] = useState(false)
 
   const showDatePicker = () => setIsDatePickerShown(true)
   const showTimePicker = () => setIsTimePickerShown(true)
-  const showDate = (date) => {
-    const day = date.getDate().toString()
-    const month = (date.getMonth()+1).toString()
-    const year = date.getFullYear().toString()
-    return day + '-' + month+ '-' + year
-  }
+//  const showDate = (date) => {
+//    const day = date.getDate().toString()
+//    const month = (date.getMonth()+1).toString()
+//    const year = date.getFullYear().toString()
+//    return day + '-' + month+ '-' + year
+//  }
 
-  const showTime = (time) => {
-    const hour = formatTime(time.getHours())
-    const minute = formatTime(time.getMinutes())
-    return hour + minute
-  }
+//  const showTime = (time) => {
+//    const hour = formatTime(time.getHours())
+//    const minute = formatTime(time.getMinutes())
+//    return hour + minute
+//  }
 
   const formatTime = (time) => time < 9 ? '0' + time.toString() : time.toString()
 
@@ -63,14 +79,14 @@ export default ({ navigation }) => {
   }
 
 
-  const handleCreateEvent = () => {
-    Events.createEvent(
+  const handleUpdateEvent = () => {
+    Events.updateEvent(
       { userId, title, note, date, time },
       () => navigation.navigate('Show Events'),
       (error) => console.error(error)
     )
   }
-  const handleDiscardEvent = () => navigation.navigate('Show Events')
+  const handleDiscardChanges = () => navigation.navigate('Show Events')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
   const handleAddEvent = () => {}
 
@@ -90,17 +106,17 @@ export default ({ navigation }) => {
                 resizeMode='contain'
               />
             </TouchableOpacity>
-            <Text style={styles.header}>New Event</Text>
+            <Text style={styles.header}>Edit Event</Text>
           </View>
           <View style={styles.right}>
-            <TouchableOpacity onPress={handleDiscardEvent}>
+            <TouchableOpacity onPress={handleDiscardChanges}>
               <Image
                 style={styles.icon}
                 source={require('../../assets/images/cancel-icon.png')}
                 resizeMode='contain'
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleCreateEvent}>
+            <TouchableOpacity onPress={handleUpdateEvent}>
               <Image
                 style={styles.icon}
                 source={require('../../assets/images/save-icon.png')}
@@ -133,7 +149,7 @@ export default ({ navigation }) => {
               <View style={styles.date}>
                 <View style={styles.picker}>
                   <TouchableOpacity style={{marginLeft:10}} onPress={showDatePicker}>
-                    <Text style={styles.time}>{showDate(date)}</Text>
+                    <Text style={styles.time}>{date}</Text>
                   </TouchableOpacity>
                   {isDatePickerShown && (
                     <DateTimePicker
@@ -146,7 +162,7 @@ export default ({ navigation }) => {
                     />
                   )}
                   <TouchableOpacity style={{marginLeft:100}} onPress={showTimePicker}>
-                    <Text style={styles.time}>{showTime(time)}</Text>
+                    <Text style={styles.time}>{time}</Text>
                   </TouchableOpacity>
                   {isTimePickerShown && (
                     <DateTimePicker
