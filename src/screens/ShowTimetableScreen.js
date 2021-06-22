@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
   Image, 
   ImageBackground, 
@@ -10,11 +10,53 @@ import {
   TouchableOpacity, 
   View 
 } from 'react-native'
+import TimeTableView, { genTimeBlock } from 'react-native-timetable';
+import * as Authentication from '../../api/auth'
+import * as Modules from '../../api/modules'
+
 
 export default ({ navigation }) => {
+  const userId = Authentication.getCurrentUserId()
+
   const handleShowModules = () => navigation.navigate('Show Modules')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
 
+  const scrollViewRef = (ref) => {
+     TimeTableView.timetableRef = ref;
+   };
+  const [modules, setModules] = useState({})
+  const [moduleList, setModuleList] = useState([])
+  useEffect(() => {
+    return Modules.subscribe(userId, setModules)
+  }, [])
+
+  useEffect(() => {
+    if (modules) {
+      const modulesTemp = []
+      const modulesArray = Object.values(modules)
+      if (modulesArray.length > 0) modulesTemp.push({ data: modulesArray })
+      setModuleList(modulesTemp)
+    }
+  }, [modules])
+
+  const eventList = []
+  for (const data in moduleList){
+    for (const classes in moduleList.lessons){
+        const startHour = formatTime(classes.startTime.getHours())
+        const startMinute = formatTime(classes.startTime.getMinutes())
+        const endHour = formatTime(classes.endTime.getHours())
+        const endMinute = formatTime(classes.endTime.getMinutes())
+        const lesson = {
+            title: data.code,
+            startTime: genTimeBlock(classes.day,startHour,startMinute),
+            endTime: genTimeBlock(classes.day, endHour, endMinute),
+            location: classes.venue,
+        }
+        eventList.add(lesson)
+    }
+  }
+  console.log(eventList)
+  const onEventPress=()=>{}
   return (
     <ImageBackground
       style={styles.background}
@@ -43,12 +85,19 @@ export default ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.container}>
-            <Text style={styles.text}>
-              This feature is currently unavailable :(.
-              Overall, your current timetable, similar to the one on NUSMODS will be displayed here.
-              You can choose to view all your current modules / add new module throung the two buttons on the header.
-            </Text>
+          <View style={styles.timetableContainer}>
+            <TimeTableView
+              scrollViewRef={scrollViewRef}
+              events={eventList}
+              pivotTime={7}
+              pivotEndTime={20}
+              pivotDate={genTimeBlock('mon')}
+              numberOfDays={5}
+              onEventPress={onEventPress}
+              headerStyle={styles.headerStyle}
+              formatDateHeader="dddd"
+              locale="en"
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -73,8 +122,7 @@ const styles = StyleSheet.create({
   }, 
   container: {
     flex: 0.92, 
-    alignItems: 'center', 
-    paddingHorizontal: 40, 
+    paddingHorizontal: 40,
   }, 
   left: {
     flexDirection: 'row', 
@@ -111,5 +159,13 @@ const styles = StyleSheet.create({
     lineHeight: 20, 
     textAlign: 'center', 
     alignSelf: 'center', 
-  }, 
+  },
+  timetableContainer: {
+    flex: 1,
+    backgroundColor: '#F8F8F8',
+    marginTop: 20,
+  },
+  headerStyle: {
+    backgroundColor: 'orange'
+  },
 })
