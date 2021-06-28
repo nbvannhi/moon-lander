@@ -29,7 +29,6 @@ class Lesson {
 export default ({ route, navigation }) => {
   const { moduleId } = route.params
   const userId = Authentication.getCurrentUserId()
-  console.log(moduleId)
 
   const [module, setModule] = useState({})
   const [name, setName] = useState('')
@@ -82,6 +81,7 @@ export default ({ route, navigation }) => {
   }
   
   const formatTime = (time) => time < 9 ? '0' + time.toString() : time.toString()  
+  
   const handleNameUpdate = (name) => setName(name)
   const handleCodeUpdate = (code) => setCode(code)
   const handleLessonsUpdate = (day, startTime, endTime, venue) => {

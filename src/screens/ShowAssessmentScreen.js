@@ -66,8 +66,6 @@ export default ({ navigation }) => {
     (error) => console.error(error)
   )
 
-
-
   const handleEditModule = (moduleId) => navigation.push('Edit Module', { moduleId })
   const handleDeleteModule = (moduleId) => Modules.deleteModule(
     { userId, moduleId }, 
@@ -78,43 +76,6 @@ export default ({ navigation }) => {
   const handleShowEvents = () => navigation.navigate('Show Events')
   const handleShowModules = () => navigation.navigate('Show Modules')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
-
-  const renderModuleList = ({ item }) => {
-    return (
-      <View style={{ flex: 0.92 }}>
-        <Modal 
-          animationType='fade'
-          transparent={true}
-          visible={isVisible}
-          onRequestClose={handleCloseModal}
-        >
-          <View style={styles.center}>
-            <View style={styles.detail}>
-              <Text style={styles.name}>
-                Module details such as name, code and class schedule will be displayed here.
-                You can choose to edit or remove a module from here too.
-              </Text>
-              <View style={styles.button}>
-                <TouchableOpacity onPress={handleCloseModal}>
-                  <Text style={styles.text}>Close</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleEditModule(item.id)}>
-                  <Text style={styles.text}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteModule(item.id)}>
-                  <Text style={styles.text}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-        <TouchableOpacity style={styles.item} onPress={handleShowModal}>
-          <Text style={styles.code}>{item.code}</Text>
-          <Text style={styles.name}>{item.name}</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
 
   const renderEventList = ({ item }) => {
     return (
@@ -146,6 +107,43 @@ export default ({ navigation }) => {
           </View>
         </Modal>
         <TouchableOpacity style={styles.item} onPress={handleShowEventModal}>
+          <Text style={styles.code}>{item.title}</Text>
+          <Text style={styles.name}>{item.note}</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const renderModuleList = ({ item }) => {
+    return (
+      <View style={{ flex: 0.92 }}>
+        <Modal 
+          animationType='fade'
+          transparent={true}
+          visible={isVisible}
+          onRequestClose={handleCloseModal}
+        >
+          <View style={styles.center}>
+            <View style={styles.detail}>
+              <Text style={styles.name}>
+                Module details such as name, code and class schedule will be displayed here.
+                You can choose to edit or remove a module from here too.
+              </Text>
+              <View style={styles.button}>
+                <TouchableOpacity onPress={handleCloseModal}>
+                  <Text style={styles.text}>Close</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleEditModule(item.id)}>
+                  <Text style={styles.text}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleDeleteModule(item.id)}>
+                  <Text style={styles.text}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <TouchableOpacity style={styles.item} onPress={handleShowModal}>
           <Text style={styles.code}>{item.code}</Text>
           <Text style={styles.name}>{item.name}</Text>
         </TouchableOpacity>
@@ -268,7 +266,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column', 
     justifyContent: 'center', 
     alignItems: 'flex-start', 
-    paddingLeft: 10, 
+    paddingHorizontal: 10, 
     paddingVertical: 10, 
     textAlign: 'left', 
   }, 

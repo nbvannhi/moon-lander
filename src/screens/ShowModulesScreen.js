@@ -40,9 +40,8 @@ export default ({ navigation }) => {
   const handleShowModal = () => setIsVisible(true)
   const handleCloseModal = () => setIsVisible(!isVisible)
 
-  const handleEditModule = (moduleId) => navigation.push('Edit Module', { moduleId })
-  const handleDeleteModule = (moduleId) => {
-    console.log(moduleId)
+  const handleEditModule = (moduleId) => () => navigation.push('Edit Module', { moduleId })
+  const handleDeleteModule = (moduleId) => () => {
     Modules.deleteModule(
     { userId, moduleId }, 
     () =>  setIsVisible(false), 
@@ -52,11 +51,12 @@ export default ({ navigation }) => {
   const handleAddModule = () => navigation.navigate('Add Module')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
 
-  const renderModuleList = ({ item, index }) => {
+  const renderModuleList = ({ item }) => {
     return (
       <View style={{ flex: 0.92 }}>
         <Modal 
           animationType='fade'
+          keyExtractor={(item, index) => item + index}
           transparent={true}
           visible={isVisible}
           onRequestClose={handleCloseModal}
@@ -71,17 +71,17 @@ export default ({ navigation }) => {
                 <TouchableOpacity onPress={handleCloseModal}>
                   <Text style={styles.text}>Close</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleEditModule(item.id)}>
+                <TouchableOpacity onPress={handleEditModule(item.id)}>
                   <Text style={styles.text}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteModule(item.id)}>
+                <TouchableOpacity onPress={handleDeleteModule(item.id)}>
                   <Text style={styles.text}>Delete</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         </Modal>
-        <TouchableOpacity style={styles.item} onPress={handleShowModal}>
+        <TouchableOpacity style={styles.item} onPress={()=>handleShowModal(item)}>
           <Text style={styles.code}>{item.code}</Text>
           <Text style={styles.name}>{item.name}</Text>
         </TouchableOpacity>

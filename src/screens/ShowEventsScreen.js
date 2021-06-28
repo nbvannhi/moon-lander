@@ -13,7 +13,6 @@ import {
   View
 } from 'react-native'
 import { Divider } from 'react-native-elements'
-import { CommonActions } from '@react-navigation/native'
 
 import * as Authentication from '../../api/auth'
 import * as Events from '../../api/events'
@@ -42,16 +41,17 @@ export default ({ navigation }) => {
   const handleCloseModal = () => setIsVisible(!isVisible)
 
   const handleEditEvent = (eventId) => navigation.push('Edit Event', { eventId })
-  const handleDeleteEvent = (eventId) => Events.deleteEvent(
+  const handleDeleteEvent = (eventId) => () => { 
+    Events.deleteEvent(
     { userId, eventId },
     () =>  setIsVisible(false),
     (error) => console.error(error)
-  )
+  )}
 
   const handleAddEvent = () => navigation.navigate('Add Event')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
 
-  const renderEventList = ({ item, index }) => {
+  const renderEventList = ({ item }) => {
     return (
       <View style={{ flex: 0.92 }}>
         <Modal
@@ -62,7 +62,7 @@ export default ({ navigation }) => {
         >
           <View style={styles.center}>
             <View style={styles.detail}>
-              <Text style={styles.name}>
+              <Text style={styles.note}>
                 Events details such as event title, note, date and time will be displayed here.
                 You can choose to edit or remove an event from here too.
               </Text>
@@ -70,10 +70,10 @@ export default ({ navigation }) => {
                 <TouchableOpacity onPress={handleCloseModal}>
                   <Text style={styles.text}>Close</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleEditEvent(item.id)}>
+                <TouchableOpacity onPress={handleEditEvent(item.id)}>
                   <Text style={styles.text}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleDeleteEvent(item.id)}>
+                <TouchableOpacity onPress={handleDeleteEvent(item.id)}>
                   <Text style={styles.text}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -81,8 +81,8 @@ export default ({ navigation }) => {
           </View>
         </Modal>
         <TouchableOpacity style={styles.item} onPress={handleShowModal}>
-          <Text style={styles.code}>{item.code}</Text>
-          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.note}>{item.note}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -194,14 +194,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     textAlign: 'left',
   },
-  code: {
+  title: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',
     lineHeight: 25,
     textAlign: 'left',
   },
-  name: {
+  note: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'normal',

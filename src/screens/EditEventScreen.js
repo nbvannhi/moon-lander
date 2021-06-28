@@ -12,23 +12,22 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import { Picker } from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
 
 import * as Authentication from '../../api/auth'
 import * as Events from '../../api/events'
 
-
 export default ({ route, navigation }) => {
   const { eventId } = route.params
   const userId = Authentication.getCurrentUserId()
-  console.log(eventId)
 
   const [event, setEvent] = useState({})
   const [title, setTitle] = useState('')
   const [note, setNote] = useState('')
   const [date, setDate] = useState(new Date(2021, 0, 1, 0, 0))
-  const [time, setTime] = useState('0000')
+  const [time, setTime] = useState(new Date(2021, 1, 1, 0, 0))
+  const [dateStr, setDateStr] = useState('20210101')
+  const [timeStr, setTimeStr] = useState('0000')
 
   useEffect(() => {
     return Events.reviewEvent({ userId, eventId }, setEvent)
@@ -38,8 +37,8 @@ export default ({ route, navigation }) => {
     if (event) {
       setTitle(event.title)
       setNote(event.note)
-      setDate(event.date)
-      setTime(event.time)
+      setDateStr(event.date)
+      setTimeStr(event.time)
     }
   }, [event])
 
@@ -48,48 +47,44 @@ export default ({ route, navigation }) => {
 
   const showDatePicker = () => setIsDatePickerShown(true)
   const showTimePicker = () => setIsTimePickerShown(true)
-//  const showDate = (date) => {
-//    const day = date.getDate().toString()
-//    const month = (date.getMonth()+1).toString()
-//    const year = date.getFullYear().toString()
-//    return day + '-' + month+ '-' + year
-//  }
-
-//  const showTime = (time) => {
-//    const hour = formatTime(time.getHours())
-//    const minute = formatTime(time.getMinutes())
-//    return hour + minute
-//  }
+  const showDate = (date) => {
+    const day = formatTime(date.getDate())
+    const month = formatTime(date.getMonth()+1)
+    const year = date.getFullYear().toString()
+    return year + month + day
+  }
+  const showTime = (time) => {
+    const hour = formatTime(time.getHours())
+    const minute = formatTime(time.getMinutes())
+    return hour + minute
+  }
 
   const formatTime = (time) => time < 9 ? '0' + time.toString() : time.toString()
 
   const handleTitleUpdate = (title) => setTitle(title)
   const handleNoteUpdate = (note) => setNote(note)
-
-
   const handleDateUpdate = (event, selectedValue) => {
     const selectedDate = selectedValue || date
     setDate(selectedDate)
+    setDateStr(showDate(selectedDate))
     setIsDatePickerShown(false)
   }
   const handleTimeUpdate = (event, selectedValue) => {
     const selectedTime = selectedValue || time
     setTime(selectedTime)
+    setTimeStr(showTime(selectedTime))
     setIsTimePickerShown(false)
   }
 
-
   const handleUpdateEvent = () => {
     Events.updateEvent(
-      { userId, title, note, date, time },
-      () => navigation.navigate('Show Events'),
-      (error) => console.error(error)
+      { userId, title, note, date: dateStr, time: timeStr },
+      () => navigation.navigate('Show Menu'),
+      (error) => console.log(error)
     )
   }
-  const handleDiscardChanges = () => navigation.navigate('Show Events')
+  const handleDiscardChanges = () => navigation.navigate('Show Menu')
   const handleShowNavigation = () => navigation.navigate('Show Menu')
-  const handleAddEvent = () => {}
-
 
   return (
     <ImageBackground
@@ -129,40 +124,32 @@ export default ({ route, navigation }) => {
           <View style={styles.container}>
             <TextInput
               style={styles.field}
-              placeholder='Title'
+              placeholder='Event title'
               placeholderTextColor='#aaa7b2'
               value={title}
               selectionColor='#8e8a98'
               maxLength={30}
               onChangeText={handleTitleUpdate}
             />
-            <TextInput
-              style={styles.field}
-              placeholder='Note'
-              placeholderTextColor='#aaa7b2'
-              value={note}
-              selectionColor='#8e8a98'
-              maxLength={10}
-              onChangeText={handleNoteUpdate}
-            />
             <View style={styles.detail}>
               <View style={styles.date}>
+                <TouchableOpacity onPress={showDatePicker}>
+                  <Text style={styles.time}>{dateStr}</Text>
+                </TouchableOpacity>
+                {isDatePickerShown && (
+                  <DateTimePicker
+                    style={styles.day}
+                    isVisible={isDatePickerShown}
+                    testID='datePicker'
+                    value={date}
+                    mode='date'
+                    display='spinner'
+                    onChange={handleDateUpdate}
+                  />
+                )}
                 <View style={styles.picker}>
-                  <TouchableOpacity style={{marginLeft:10}} onPress={showDatePicker}>
-                    <Text style={styles.time}>{date}</Text>
-                  </TouchableOpacity>
-                  {isDatePickerShown && (
-                    <DateTimePicker
-                      isVisible={isDatePickerShown}
-                      testID='datePicker'
-                      value={date}
-                      mode='date'
-                      display='spinner'
-                      onChange={handleDateUpdate}
-                    />
-                  )}
-                  <TouchableOpacity style={{marginLeft:100}} onPress={showTimePicker}>
-                    <Text style={styles.time}>{time}</Text>
+                  <TouchableOpacity onPress={showTimePicker}>
+                    <Text style={styles.time}>{timeStr}</Text>
                   </TouchableOpacity>
                   {isTimePickerShown && (
                     <DateTimePicker
@@ -177,11 +164,14 @@ export default ({ route, navigation }) => {
                 </View>
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={handleAddEvent}>
-              <Text style={styles.text}>Add Event</Text>
-            </TouchableOpacity>
+            <TextInput
+              style={styles.field}
+              placeholder='Note'
+              placeholderTextColor='#aaa7b2'
+              value={note}
+              selectionColor='#8e8a98'
+              onChangeText={handleNoteUpdate}
+            />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -260,7 +250,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 30,
     width: 250,
-    height: 70,
+    height: 40,
     marginTop: 10,
     marginHorizontal: 130,
     paddingVertical: 5,
@@ -270,7 +260,7 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingRight: 10,
+    paddingHorizontal: 10,
     width: 250,
     height: 30,
   },

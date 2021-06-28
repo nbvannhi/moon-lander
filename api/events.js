@@ -20,7 +20,7 @@ export const reviewEvent = ({ userId, eventId }, onValueChanged) => {
   return () => event.off('value')
 }
 
-export const updateEvent = async ({ userId, eventId }, {title, note, date, time }, onSuccess, onError) => {
+export const updateEvent = async ({ userId, eventId }, { title, note, date, time }, onSuccess, onError) => {
   try {
     const event = db.ref(`events/${userId}/${eventId}`)
     await event.update({ title, note, date, time })

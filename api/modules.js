@@ -28,7 +28,7 @@ export const updateModule = async ({ userId, moduleId }, { name, code, lessons }
   } catch (error) {
     return onError(error)
   }
-}
+} 
 
 export const deleteModule = async ({ userId, moduleId }, onSuccess, onError) => {
   try {
