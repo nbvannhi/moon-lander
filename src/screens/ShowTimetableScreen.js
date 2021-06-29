@@ -39,24 +39,31 @@ export default ({ navigation }) => {
     }
   }, [modules])
 
-  const eventList = []
-  for (const data in moduleList){
-    for (const classes in moduleList.lessons){
-        const startHour = formatTime(classes.startTime.getHours())
-        const startMinute = formatTime(classes.startTime.getMinutes())
-        const endHour = formatTime(classes.endTime.getHours())
-        const endMinute = formatTime(classes.endTime.getMinutes())
-        const lesson = {
-            title: data.code,
-            startTime: genTimeBlock(classes.day,startHour,startMinute),
-            endTime: genTimeBlock(classes.day, endHour, endMinute),
-            location: classes.venue,
+  var eventList = []
+    for (const module of moduleList){
+       for (const classes of module.data[0].lessons){
+           const classStartTime = Number(classes.startTime)
+           const classEndTime = Number(classes.endTime)
+           const startHour = classStartTime/100
+           const endHour = classEndTime /100
+           const startMinute = classStartTime%100
+           const endMinute = classEndTime%100
+           const lesson = {
+                title: module.data[0].code,
+                startTime: genTimeBlock(classes.day, startHour, startMinute),
+                endTime: genTimeBlock(classes.day, endHour, endMinute),
+                location: classes.venue,
+                extra_descriptions: [],
+              }
+              eventList.push(lesson)
+            }
         }
-        eventList.add(lesson)
-    }
+
+
+  const onEventPress=()=>{
+
   }
-  console.log(eventList)
-  const onEventPress=()=>{}
+
   return (
     <ImageBackground
       style={styles.background}
