@@ -38,10 +38,12 @@ export default ({ navigation }) => {
       setModuleList(modulesTemp)
     }
   }, [modules])
-
+  const moduleData = moduleList[0]
   var eventList = []
-    for (const module of moduleList){
-       for (const classes of module.data[0].lessons){
+    for (const moduleData of moduleList){
+       for (const module of moduleData.data)
+       {
+       for (const classes of module.lessons){
            const classStartTime = Number(classes.startTime)
            const classEndTime = Number(classes.endTime)
            const startHour = classStartTime/100
@@ -49,7 +51,7 @@ export default ({ navigation }) => {
            const startMinute = classStartTime%100
            const endMinute = classEndTime%100
            const lesson = {
-                title: module.data[0].code,
+                title: module.code,
                 startTime: genTimeBlock(classes.day, startHour, startMinute),
                 endTime: genTimeBlock(classes.day, endHour, endMinute),
                 location: classes.venue,
@@ -57,9 +59,8 @@ export default ({ navigation }) => {
               }
               eventList.push(lesson)
             }
+          }
         }
-
-
   const onEventPress=()=>{
 
   }
